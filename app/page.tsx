@@ -1,0 +1,147 @@
+"use client";
+import { useState } from "react";
+import { PhoneFrame } from "@/components/PhoneFrame";
+import { TabBar } from "@/components/TabBar";
+import { LoginScreen } from "@/screens/LoginScreen";
+import { WelcomeScreen } from "@/screens/WelcomeScreen";
+import { CreateTwinCameraScreen } from "@/screens/CreateTwinCameraScreen";
+import { CustomizeTwinScreen } from "@/screens/CustomizeTwinScreen";
+import { PairDeviceScreen } from "@/screens/PairDeviceScreen";
+import { ProcessingScreen } from "@/screens/ProcessingScreen";
+import { HomeScreen } from "@/screens/HomeScreen";
+import { TwinScreen } from "@/screens/TwinScreen";
+import { LogInputScreen } from "@/screens/LogInputScreen";
+import { ProgressScreen } from "@/screens/ProgressScreen";
+import { Projection5yScreen } from "@/screens/Projection5yScreen";
+import { RecommendationsScreen } from "@/screens/RecommendationsScreen";
+import { AlertsScreen } from "@/screens/AlertsScreen";
+import { SubIndexDetailScreen } from "@/screens/SubIndexDetailScreen";
+import { DoctorReportScreen } from "@/screens/DoctorReportScreen";
+import { ProfileScreen } from "@/screens/ProfileScreen";
+import { icmToday } from "@/lib/mockData";
+import type {
+  PairedDevice,
+  ScreenId,
+  SubIndexKey,
+  TwinAppearance,
+} from "@/lib/types";
+
+const ONBOARDING: ScreenId[] = [
+  "login",
+  "welcome",
+  "splash",
+  "createTwin",
+  "customize",
+  "pairDevice",
+  "processing",
+];
+
+export default function Page() {
+  const [screen, setScreen] = useState<ScreenId>("login");
+  const [subIndex, setSubIndex] = useState<SubIndexKey>("Sueño");
+  const [userPhoto, setUserPhoto] = useState<string | null>(null);
+  const [pairedDevice, setPairedDevice] = useState<PairedDevice | null>(null);
+  const [pairReturnTo, setPairReturnTo] = useState<ScreenId>("processing");
+  const [appearance, setAppearance] = useState<TwinAppearance>({
+    skinTone: 1,
+    hair: "largo",
+    glasses: false,
+    presentation: "femenina",
+  });
+
+  const isOnboarding = ONBOARDING.includes(screen);
+
+  const startPairFrom = (returnTo: ScreenId) => {
+    setPairReturnTo(returnTo);
+    setScreen("pairDevice");
+  };
+
+  return (
+    <PhoneFrame>
+      <div key={screen} className="h-full animate-[fadeIn_240ms_ease-out]">
+        {screen === "login" && (
+          <LoginScreen onNav={setScreen} appearance={appearance} />
+        )}
+        {screen === "welcome" && (
+          <WelcomeScreen onNav={setScreen} appearance={appearance} />
+        )}
+        {screen === "createTwin" && (
+          <CreateTwinCameraScreen onNav={setScreen} setUserPhoto={setUserPhoto} />
+        )}
+        {screen === "customize" && (
+          <CustomizeTwinScreen
+            onNav={(s) => {
+              if (s === "processing") {
+                // After customize, route through pair-device, then to processing.
+                setPairReturnTo("processing");
+                setScreen("pairDevice");
+              } else {
+                setScreen(s);
+              }
+            }}
+            appearance={appearance}
+            setAppearance={setAppearance}
+            userPhoto={userPhoto}
+          />
+        )}
+        {screen === "pairDevice" && (
+          <PairDeviceScreen
+            onNav={setScreen}
+            onPaired={setPairedDevice}
+            returnTo={pairReturnTo}
+          />
+        )}
+        {screen === "processing" && (
+          <ProcessingScreen onNav={setScreen} appearance={appearance} />
+        )}
+        {screen === "home" && (
+          <HomeScreen
+            onNav={setScreen}
+            appearance={appearance}
+            icm={icmToday}
+            onOpenSubIndex={(k) => {
+              setSubIndex(k);
+              setScreen("subIndex");
+            }}
+          />
+        )}
+        {screen === "twin" && (
+          <TwinScreen onNav={setScreen} appearance={appearance} />
+        )}
+        {screen === "log" && <LogInputScreen onNav={setScreen} />}
+        {screen === "progress" && <ProgressScreen onNav={setScreen} />}
+        {screen === "projection" && <Projection5yScreen onNav={setScreen} />}
+        {screen === "recommendations" && <RecommendationsScreen />}
+        {screen === "alerts" && <AlertsScreen onNav={setScreen} />}
+        {screen === "subIndex" && (
+          <SubIndexDetailScreen onNav={setScreen} subIndexKey={subIndex} />
+        )}
+        {screen === "doctor" && <DoctorReportScreen onNav={setScreen} />}
+        {screen === "profile" && (
+          <ProfileScreen
+            onNav={setScreen}
+            appearance={appearance}
+            pairedDevice={pairedDevice}
+            onStartPair={() => startPairFrom("profile")}
+          />
+        )}
+      </div>
+
+      {!isOnboarding && <TabBar active={screen} onNav={setScreen} />}
+
+      <style jsx global>{`
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(6px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+      `}</style>
+
+    </PhoneFrame>
+  );
+}

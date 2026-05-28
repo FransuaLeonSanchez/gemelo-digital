@@ -1,0 +1,169 @@
+# CONTEXTO COMPLETO — Gemelo Digital Metabólico
+### Documento de contexto para alimentar a otra IA / desarrollador
+*Proyecto de Innovación · Estudio Shonos · Ingeniería Industrial · Lima, Perú*
+
+> Este documento tiene dos partes. **PARTE 1** condensa todo el trabajo que el equipo ya hizo (problema, ideación, solución, variables y arquitectura). **PARTE 2** es una investigación profunda del síndrome metabólico con datos duros, factores, biomarcadores e inputs, y el rol de la IA y los gemelos digitales. Todo el contexto que necesitas está aquí.
+
+---
+
+# PARTE 1 — CONDENSADO DEL TRABAJO YA REALIZADO POR EL EQUIPO
+
+## 1.1 El problema elegido
+**"Las enfermedades metabólicas se convierten en una cadena silenciosa e irreversible en el Perú."**
+El núcleo del problema es la **falta de detección temprana y seguimiento continuo** del síndrome metabólico: la persona tiene resistencia a la insulina, glucosa elevada o síndrome metabólico y **no lo sabe** porque al inicio no hay síntomas. Cuando se detecta, el daño ya avanzó.
+
+El equipo evaluó tres dominios posibles (minería, agua/saneamiento y salud) en una tabla comparativa ponderada (magnitud 30 %, impacto humano 25 %, impacto económico 20 %, cliente pagador 15 %, escalabilidad 10 %) y **salud/diabetes ganó** con el puntaje más alto en casi todos los criterios.
+
+## 1.2 Por qué duele el problema (los 3 fallos del sistema actual)
+1. **Citas que tardan meses:** en el MINSA, ver a un especialista toma de 2 a 6 meses; la enfermedad avanza sin control durante ese tiempo.
+2. **Sin seguimiento continuo:** el paciente sale del consultorio y queda solo, sin monitoreo, sin retroalimentación, sin alertas → alta deserción terapéutica.
+3. **Costo explosivo para el Estado:** tratar un caso de diabetes tipo 2 declarada cuesta entre **S/ 3,500 y S/ 8,000 anuales** por paciente.
+Consecuencia si no se interviene temprano: diabetes tipo 2, enfermedad cardiovascular e infertilidad.
+
+## 1.3 Proceso de ideación que ya se ejecutó
+El equipo (Fransua, Cristian, Stefany, Alessandro) trabajó en Miro con metodologías de innovación:
+- **Definición del problema "como jugando":** lluvia de causas del síndrome metabólico (mala alimentación, estrés crónico, sedentarismo extremo, mal sueño, factores genéticos, no detectarlo a tiempo, prevalencia general).
+- **Brainstorming de soluciones:** se generaron ~10 ideas: app de automonitoreo, telemedicina, chatbot por WhatsApp, nutrición personalizada, dashboard médico, CGM con app, nutrición genómica, promotores de salud digitales, wearables con alertas, y el **Gemelo Digital Metabólico con Machine Learning** (marcado como la idea estrella ⭐ y la brecha real: "no existe adaptado a Perú").
+- **Terna de soluciones (las 3 finalistas):**
+  1. **Asistente IA** (triaje conversacional, soporte continuo).
+  2. **Gemelo Digital Metabólico** (réplica computacional del metabolismo).
+  3. **Detección con IoT** (sensores que miden glucosa, presión, etc.).
+- **SCAMPER** aplicado a cada finalista, con aportes de cada integrante (Sustituir, Combinar, Adaptar, Modificar, dar otros usos / Poner, Eliminar, Reordenar/Invertir).
+
+## 1.4 La solución elegida: Gemelo Digital Metabólico
+Un **modelo digital que replica el comportamiento metabólico único de cada persona**. Aprende de sus datos reales (glucosa, sueño, alimentación, hormonas) y **predice cómo reaccionará su cuerpo ante distintos hábitos**. Genera recomendaciones personalizadas en tiempo real, con **módulo hormonal femenino** y **adaptado al contexto peruano** (dieta de arroz, papa, menú). Combina **Machine Learning + CGM (monitoreo continuo de glucosa)**.
+
+## 1.5 Inteligencia Artificial en la solución (lo que el equipo ya definió)
+La IA es el corazón del gemelo. Componentes definidos:
+- **Modelo LSTM** → predicción glucémica: predice cómo cambiará la glucosa en las próximas 2 horas a partir de la serie de glucosa, carga glucémica de la comida, tiempo desde la comida, pasos recientes, HRV y hora del día. Error objetivo < 15 mg/dL.
+- **Random Forest** → clasificación de riesgo (bajo/moderado/alto) usando variabilidad glucémica, tiempo en rango, pico postprandial promedio, sueño, pasos, HRV, índice TyG y cintura. Precisión objetivo > 85 %.
+- **Índice de Carga Metabólica (ICM)** → score 0–100 que resume el riesgo en tiempo real, promedio ponderado de 5 sub-índices: glucosa 35 %, actividad 20 %, sueño 20 %, estrés 15 %, nutrición 10 %. Umbrales: 0–39 verde / 40–69 amarillo / 70–100 rojo.
+- **Índice TyG** = ln(triglicéridos/2) + ln(glucosa en ayunas/2): proxy de resistencia a la insulina cuando hay datos de laboratorio.
+- **Motor de recomendaciones:** banco de 200+ recomendaciones parametrizadas, en español peruano, sin tecnicismos, que se eligen según el sub-índice con peor desempeño.
+- El modelo base se preentrenaría con datasets públicos (NHANES + ENDES Perú) y se afinaría individualmente (las primeras 2 semanas son de calibración).
+
+## 1.6 Variables del estudio (definición de innovación)
+- **Variable Independiente (VI): Hábitos de vida diarios** — alimentación (carga glucémica, ultraprocesados, horario), sueño (horas, calidad, hora de acostarse), estrés (HRV, autoreporte), actividad física (pasos, minutos, fuerza).
+- **Variable Dependiente (VD): Estado metabólico / Riesgo** — indicadores CGM (picos postprandiales, variabilidad glucémica, tiempo en rango 70–140), laboratorio (glucosa en ayunas, triglicéridos, HDL, HOMA-IR), índices compuestos (TyG, ICM).
+
+## 1.7 Arquitectura de 4 capas (ya diseñada)
+1. **Sensores/IoT:** CGM (glucosa cada 5 min), wearable vía BLE (HRV, pasos, sueño), app móvil (hábitos).
+2. **Ingesta/Backend:** API Gateway, validación de rangos fisiológicos, cola de mensajes, almacenamiento (PostgreSQL + TimescaleDB).
+3. **Gemelo + Motor IA:** modelo individual por usuario, LSTM, Random Forest, calculadora de riesgo, simulador "what-if".
+4. **Interfaz:** app móvil (React Native), dashboard web para médicos (React), alertas, recomendaciones.
+Stack previsto: Python/FastAPI, React Native, PostgreSQL/TimescaleDB, TensorFlow/scikit-learn, WebSocket, Docker. Cumplimiento de la **Ley N° 29733 (Protección de Datos Personales del Perú)**, cifrado TLS 1.3 en tránsito y AES-256 en reposo.
+
+## 1.8 Público y mercado (ya identificado)
+- **Pacientes (SIS y EsSalud):** millones en zonas rurales y urbanas con controles esporádicos; riesgo de debutar con infartos o insuficiencia renal.
+- **Hospitales y red nacional:** saturación de camas por complicaciones crónicas (pie diabético); el gemelo permitiría triaje predictivo.
+- **Aseguradoras y Estado:** migrar a monitoreo continuo genera ahorros al reducir hospitalizaciones.
+- **Segmento objetivo del MVP:** adultos de **20–45 años de Lima Metropolitana** con 2+ alteraciones metabólicas, especialmente mujeres.
+
+---
+
+# PARTE 2 — INVESTIGACIÓN PROFUNDA DEL SÍNDROME METABÓLICO
+
+> Datos para nutrir la "inteligencia" del gemelo y justificar cada pantalla. Las cifras provienen de fuentes médicas y estudios peruanos (ver fuentes al final).
+
+## 2.1 ¿Qué es exactamente el síndrome metabólico?
+Es un **conjunto de alteraciones que ocurren juntas** y multiplican el riesgo de diabetes tipo 2, enfermedad cardiovascular y accidente cerebrovascular. El hilo conductor de los 5 componentes es la **resistencia a la insulina**: las células del músculo, grasa e hígado dejan de responder bien a la insulina, el páncreas produce más, y se desencadena una cascada metabólica. La grasa abdominal (visceral) es el motor central: el tejido adiposo agrandado libera citoquinas proinflamatorias (TNF, leptina, resistina, inhibidor del activador del plasminógeno) que alteran la acción de la insulina.
+
+## 2.2 Criterios diagnósticos (los 5 componentes) — INPUTS CLÍNICOS CLAVE
+Se diagnostica con **3 o más** de estos 5 (criterio NCEP-ATP III / AHA-NHLBI, el más usado). La IDF exige obesidad abdominal obligatoria + 2 más.
+
+| # | Componente | Umbral (hombre) | Umbral (mujer) | Notas |
+|---|---|---|---|---|
+| 1 | **Circunferencia de cintura** (obesidad abdominal) | ≥ 102 cm (ATP III) / ≥ 94 cm (IDF) | ≥ 88 cm (ATP III) / ≥ 80 cm (IDF) | El factor más ligado al síndrome; umbrales ajustables por etnia |
+| 2 | **Triglicéridos** | ≥ 150 mg/dL | ≥ 150 mg/dL | O en tratamiento para TG altos |
+| 3 | **Colesterol HDL** ("bueno") | < 40 mg/dL | < 50 mg/dL | O en tratamiento para HDL bajo |
+| 4 | **Presión arterial** | ≥ 130/85 mmHg | ≥ 130/85 mmHg | O en tratamiento antihipertensivo |
+| 5 | **Glucosa en ayunas** | ≥ 100 mg/dL | ≥ 100 mg/dL | 100–125 = prediabetes; >125 = diabetes tipo 2 probable |
+
+**Exámenes que el médico solicita:** glucosa en ayunas, HbA1c (≥ 5.7 % indica glucosa alta), perfil lipídico (TG, HDL, LDL), medición de cintura. Signos físicos: *acantosis nigricans* (manchas oscuras en pliegues, signo de resistencia a la insulina), xantomas.
+
+## 2.3 Causas y factores de riesgo (CADA UNO ES UN POSIBLE INPUT DE LA APP)
+
+**Factores modificables (lo que el gemelo monitorea y busca cambiar):**
+- **Mala alimentación:** dietas altas en calorías, grasas saturadas, azúcar y ultraprocesados; alta carga glucémica.
+- **Inactividad física / sedentarismo:** menos de 30 min de actividad la mayoría de días.
+- **Obesidad / sobrepeso:** especialmente grasa visceral abdominal (IMC > 25).
+- **Estrés crónico:** dispara el eje hipotálamo-hipófisis-adrenal (HPA) → eleva **cortisol** → sube glucosa, insulina, presión y grasa visceral. Se mide indirectamente con **HRV (variabilidad de frecuencia cardiaca)**: HRV baja = más estrés/peor perfil metabólico (asociación más fuerte en mujeres).
+- **Mal sueño:** dormir muy poco o demasiado aumenta el riesgo del síndrome y de sus componentes.
+- **Tabaquismo.**
+
+**Factores no modificables:**
+- **Edad:** el riesgo sube con la edad.
+- **Sexo:** ser mujer es factor de riesgo independiente (en Perú la prevalencia femenina supera ampliamente a la masculina).
+- **Genética / etnia:** predisposición heredada en el metabolismo de lípidos y la sensibilidad a la insulina; poblaciones hispanas/latinas con mayor riesgo.
+- **Antecedentes:** diabetes gestacional, historia familiar de diabetes.
+
+## 2.4 Datos epidemiológicos — PERÚ
+
+| Dato | Cifra | Fuente |
+|---|---|---|
+| Prevalencia nacional de síndrome metabólico (ATP III) | **16,8 %** | Estudio nacional, ENIN |
+| Lima Metropolitana | **20,7 %** (sobre el promedio nacional) | mismo estudio |
+| Resto de la costa | 21,5 % | mismo estudio |
+| Sierra rural (la más baja) | 11,1 % | mismo estudio |
+| Mujeres vs hombres (nacional) | **26,4 % vs 7,2 %** | mismo estudio |
+| Usuarios de comedores populares en Lima (criterio IDF) | **40,1 %** | Rev. Peruana Med. Exp. Salud Pública |
+| Sedentarismo en esa población | **86,1 %** | mismo estudio |
+| Obesidad abdominal en esa población | 51,6 % | mismo estudio |
+| HDL bajo | 42,2 % | mismo estudio |
+| Hospital EsSalud (Florencia de Mora) | **38,97 %** de prevalencia | Horizonte Médico |
+| Adultos mayores SMP Lima (IDF) | 35,3 % | Rev. Med. Hered. |
+
+**Datos del propio proyecto (estudio de prevalencia de alteraciones metabólicas en adultos peruanos, Rev. Peruana Med. Exp. Salud Pública, 2023):**
+- **87 %** de adultos peruanos tiene al menos 1 alteración metabólica.
+- **73,1 %** es metabólicamente no saludable.
+- Solo **5,3 %** no tiene ninguna alteración.
+- **47,9 %** de personas con peso normal (IMC normal) ya son metabólicamente no saludables → *el peso normal NO descarta el riesgo oculto*.
+
+## 2.5 Datos globales (2024)
+- **589 millones** de adultos viven con diabetes (1 de cada 9).
+- **252 millones** no están diagnosticados.
+- **3,4 millones** de muertes anuales atribuibles a diabetes.
+- **USD 1,015 mil millones** de gasto sanitario global asociado.
+- La IDF proyecta 643 millones de diabéticos para 2030 y 783 millones para 2045.
+- Mercado de gemelos digitales en salud: **USD 4,92 mil millones (2024) → proyección USD 21,31 mil millones (2032)**.
+
+## 2.6 Consecuencias si no se interviene (úsalo en pantallas de impacto/proyección)
+- **Daño físico irreversible:** entre 40 % y 60 % de las amputaciones no traumáticas en el país son por diabetes.
+- **Costos hospitalarios explosivos:** las descompensaciones agudas "evitables" elevan los costos de atención hasta **239,5 %**.
+- **Mortalidad creciente:** la mortalidad por diabetes en la región creció más de 50 % en dos décadas; muchos pacientes debutan directamente con infartos.
+- **Progresión típica:** alteración silenciosa → resistencia a la insulina → síndrome metabólico → prediabetes → diabetes tipo 2 → enfermedad cardiovascular / renal / infertilidad.
+
+## 2.7 INPUTS y OUTPUTS para el gemelo digital (resumen accionable)
+
+**INPUTS que el gemelo necesita conocer:**
+- *Continuos (sensores):* glucosa (CGM cada 5 min), frecuencia cardiaca, HRV, pasos, minutos de actividad, fases y horas de sueño.
+- *Autoreporte diario:* comidas (foto/descripción → carga glucémica estimada), horas y calidad de sueño, nivel de estrés percibido (1–10), síntomas.
+- *Perfil basal:* edad, sexo, estatura, peso, **circunferencia de cintura** (clave), ciudad, antecedentes familiares.
+- *Laboratorio (cuando exista):* glucosa en ayunas, HbA1c, triglicéridos, HDL, LDL, presión arterial → permiten calcular HOMA-IR y TyG.
+
+**OUTPUTS que el gemelo entrega:**
+- ICM 0–100 con color de riesgo y estado del gemelo (saludable/regular/riesgo).
+- 5 sub-índices (glucosa, actividad, sueño, estrés, nutrición).
+- Predicción de respuesta glucémica a una comida específica (mg/dL en 30/60/120 min).
+- Clasificación de riesgo (bajo/moderado/alto) y riesgo proyectado a 5 años.
+- Simulación contrafactual: "si caminas X / duermes Y / cambias la cena → tu riesgo baja/sube N puntos".
+- Recomendaciones personalizadas diarias + alertas (picos de glucosa, sueño insuficiente).
+- Reporte resumido para el médico (rompe la barrera de la cita que tarda meses).
+
+## 2.8 El rol de la IA y los gemelos digitales (evidencia que respalda el proyecto)
+- Un **gemelo digital** en salud es un modelo computacional en tiempo real del metabolismo de una persona que integra CGM, sensores y datos del paciente con IA/ML para dar recomendaciones personalizadas; la diabetes es un dominio "rico en datos" ideal para esta tecnología.
+- **Twin Health (USA/India) — evidencia clínica real:** su "Whole Body Digital Twin" con IA + IoT logró las tasas de remisión de diabetes tipo 2 más altas reportadas: ~84 % de mejora en parámetros a 6 meses en un ensayo controlado aleatorizado, y en otras lecturas 71 % de remisión a 1 año frente a 2,4 % en atención estándar; 73,8 % de pacientes con ≥5 % de pérdida de peso; reducción de HbA1c y mejoras cardiovasculares.
+- La clave técnica es modelar la **respuesta glucémica postprandial individual (PPGR)** — cada persona responde distinto al mismo alimento — y ajustar la nutrición en tiempo real vía app.
+- Estos sistemas predicen glucosa, optimizan dieta, dosifican insulina y evalúan riesgo de complicaciones combinando CGM + wearables (actividad, HRV, sueño) + ML.
+- **La brecha que llena este proyecto:** no existe un gemelo digital metabólico **adaptado al contexto peruano** (dieta local, perfil del adulto limeño, módulo hormonal femenino, integración con SIS/EsSalud). Ahí está la innovación.
+
+---
+
+## FUENTES PRINCIPALES
+- Criterios diagnósticos: AHA/NHLBI (Circulation), NCEP-ATP III, IDF, Mayo Clinic, Cleveland Clinic, Johns Hopkins, StatPearls (NCBI), American Heart Association.
+- Causas/fisiopatología: Yale Medicine, WebMD, Cedars-Sinai, StatPearls; HRV y estrés: PubMed (HRV–MetS–HOMA-IR), "Biomarker of Stress, Metabolic Syndrome and Human Health" (NCBI).
+- Epidemiología Perú: Rev. Peruana Med. Exp. Salud Pública; SciELO Perú (prevalencia nacional 16,8 %; comedores populares 40,1 %); Horizonte Médico (USMP); Rev. Med. Hered.; estudio de prevalencia de alteraciones metabólicas en adultos peruanos (2023, el del propio proyecto).
+- Gemelos digitales / IA: Twin Health; American Diabetes Association (remisión con WBDT); Frontiers in Endocrinology (DT + nutrición personalizada, 2024); Diabetes Research and Clinical Practice (paradigma de gemelo digital, 2025); ScienceDirect (DT + IA en enfermedad metabólica).
+- Datos globales y de mercado: IDF Diabetes Atlas 2023/2024; reportes de mercado de gemelos digitales en salud.
+
+*Nota: las cifras de prevalencia peruana varían entre estudios según el criterio usado (ATP III vs IDF) y la población (general, comedores populares, hospitalaria), por eso se reportan varias.*
