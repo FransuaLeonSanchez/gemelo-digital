@@ -1,38 +1,39 @@
 import type { AlertItem, Recommendation, SubIndex } from "./types";
 
 export const mockUser = {
-  name: "Stefany",
-  email: "stefany.mendez@gmail.com",
-  age: 28,
-  sex: "Mujer",
-  height: 162,
-  weight: 64,
-  waist: 84,
+  name: "Fransua",
+  email: "fransualeon2004@gmail.com",
+  age: 22,
+  sex: "Hombre" as const,
+  height: 163,
+  weight: 63,
+  waist: 88,
   city: "Lima Metropolitana",
-  // Last available labs (mock — usually no Peruvian has all of these).
+  history: ["Antecedente familiar de diabetes", "Sedentario"] as string[],
+  // Last available labs (mock — adultos jóvenes raramente tienen panel completo).
   labs: {
     fastingGlucose: 102,   // mg/dL  (≥100 = alterada, prediabetes)
-    hba1c: 5.7,            // %      (≥5.7 = glucemia alta)
-    triglycerides: 148,    // mg/dL  (≥150 = alterada)
-    hdl: 49,               // mg/dL  (<50 mujer = alterada)
-    ldl: 122,              // mg/dL
+    hba1c: 5.6,            // %      (≥5.7 = glucemia alta)
+    triglycerides: 158,    // mg/dL  (≥150 = alterada)
+    hdl: 41,               // mg/dL  (<40 hombre = alterada)  → 41 NO está alterada
+    ldl: 118,              // mg/dL
     bloodPressure: "124/82", // mmHg  (≥130/85 = alterada)
-    hrv: 38,               // ms     (bajo = más estrés)
-    restingHR: 76,         // bpm
+    hrv: 42,               // ms     (bajo–medio)
+    restingHR: 74,         // bpm
     // Índice TyG = ln(triglicéridos/2) + ln(glucosa ayunas/2)
-    // = ln(74) + ln(51) ≈ 4.30 + 3.93 = 8.23  → riesgo moderado
-    tyg: 8.23,
+    // = ln(79) + ln(51) ≈ 4.37 + 3.93 = 8.30  → riesgo moderado
+    tyg: 8.30,
   },
 };
 
-// 5 criterios diagnósticos del síndrome metabólico (NCEP-ATP III)
-// Necesita ≥ 3 alterados para diagnóstico.
+// 5 criterios diagnósticos del síndrome metabólico (NCEP-ATP III) — perfil Fransua (hombre)
+// Necesita ≥ 3 alterados para diagnóstico positivo.
 export const mtsCriteria = [
-  { key: "Cintura",       value: "84 cm",     threshold: "≥ 88 cm (mujer)", altered: false },
-  { key: "Triglicéridos", value: "148 mg/dL", threshold: "≥ 150 mg/dL",     altered: false },
-  { key: "HDL",           value: "49 mg/dL",  threshold: "< 50 mg/dL (mujer)", altered: true },
-  { key: "Presión",       value: "124/82",    threshold: "≥ 130/85 mmHg",    altered: false },
-  { key: "Glucosa ayunas",value: "102 mg/dL", threshold: "≥ 100 mg/dL",      altered: true },
+  { key: "Cintura",       value: "88 cm",     threshold: "≥ 102 cm (hombre)", altered: false },
+  { key: "Triglicéridos", value: "158 mg/dL", threshold: "≥ 150 mg/dL",       altered: true  },
+  { key: "HDL",           value: "41 mg/dL",  threshold: "< 40 mg/dL (hombre)", altered: false },
+  { key: "Presión",       value: "124/82",    threshold: "≥ 130/85 mmHg",      altered: false },
+  { key: "Glucosa ayunas",value: "102 mg/dL", threshold: "≥ 100 mg/dL",        altered: true  },
 ];
 
 // Datos epidemiológicos del Perú para Welcome / educativo
