@@ -8,6 +8,7 @@ import { CreateTwinCameraScreen } from "@/screens/CreateTwinCameraScreen";
 import { CustomizeTwinScreen } from "@/screens/CustomizeTwinScreen";
 import { PairDeviceScreen } from "@/screens/PairDeviceScreen";
 import { ProfileFormScreen } from "@/screens/ProfileFormScreen";
+import { TwinGenerationScreen } from "@/screens/TwinGenerationScreen";
 import { ProcessingScreen } from "@/screens/ProcessingScreen";
 import { HomeScreen } from "@/screens/HomeScreen";
 import { TwinScreen } from "@/screens/TwinScreen";
@@ -33,6 +34,7 @@ const ONBOARDING: ScreenId[] = [
   "welcome",
   "splash",
   "createTwin",
+  "twinGenerating",
   "customize",
   "profileForm",
   "pairDevice",
@@ -52,6 +54,7 @@ export default function Page() {
     presentation: "masculina",
   });
   const [meals, setMeals] = useState<Meal[]>([]);
+  const [useImage, setUseImage] = useState(false);
 
   const isOnboarding = ONBOARDING.includes(screen);
 
@@ -67,16 +70,21 @@ export default function Page() {
           <LoginScreen onNav={setScreen} appearance={appearance} />
         )}
         {screen === "welcome" && (
-          <WelcomeScreen onNav={setScreen} appearance={appearance} />
+          <WelcomeScreen onNav={setScreen} appearance={appearance} useImage={useImage} />
         )}
         {screen === "createTwin" && (
           <CreateTwinCameraScreen onNav={setScreen} setUserPhoto={setUserPhoto} />
+        )}
+        {screen === "twinGenerating" && (
+          <TwinGenerationScreen
+            onNav={setScreen}
+            onComplete={() => setUseImage(true)}
+          />
         )}
         {screen === "customize" && (
           <CustomizeTwinScreen
             onNav={(s) => {
               if (s === "processing") {
-                // After customize, collect profile data → pair device → processing.
                 setPairReturnTo("processing");
                 setScreen("profileForm");
               } else {
@@ -86,6 +94,7 @@ export default function Page() {
             appearance={appearance}
             setAppearance={setAppearance}
             userPhoto={userPhoto}
+            useImage={useImage}
           />
         )}
         {screen === "profileForm" && <ProfileFormScreen onNav={setScreen} />}
@@ -97,12 +106,13 @@ export default function Page() {
           />
         )}
         {screen === "processing" && (
-          <ProcessingScreen onNav={setScreen} appearance={appearance} />
+          <ProcessingScreen onNav={setScreen} appearance={appearance} useImage={useImage} />
         )}
         {screen === "home" && (
           <HomeScreen
             onNav={setScreen}
             appearance={appearance}
+            useImage={useImage}
             icm={icmToday}
             meals={meals}
             onOpenSubIndex={(k) => {
@@ -112,7 +122,7 @@ export default function Page() {
           />
         )}
         {screen === "twin" && (
-          <TwinScreen onNav={setScreen} appearance={appearance} />
+          <TwinScreen onNav={setScreen} appearance={appearance} useImage={useImage} />
         )}
         {screen === "log" && (
           <LogInputScreen onNav={setScreen} meals={meals} setMeals={setMeals} />
@@ -129,6 +139,7 @@ export default function Page() {
           <ProfileScreen
             onNav={setScreen}
             appearance={appearance}
+            useImage={useImage}
             pairedDevice={pairedDevice}
             onStartPair={() => startPairFrom("profile")}
           />

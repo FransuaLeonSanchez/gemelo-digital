@@ -7,6 +7,7 @@ import type { ScreenId, TwinAppearance } from "@/lib/types";
 interface Props {
   onNav: (s: ScreenId) => void;
   appearance: TwinAppearance;
+  useImage?: boolean;
 }
 
 const STEPS = [
@@ -17,7 +18,7 @@ const STEPS = [
   "Calibrando tu Índice de Carga Metabólica…",
 ];
 
-export function ProcessingScreen({ onNav, appearance }: Props) {
+export function ProcessingScreen({ onNav, appearance, useImage = false }: Props) {
   const [step, setStep] = useState(0);
 
   useEffect(() => {
@@ -32,7 +33,7 @@ export function ProcessingScreen({ onNav, appearance }: Props) {
   return (
     <div className="flex flex-col h-full px-6 pb-8">
       <div className="flex-1 flex flex-col items-center justify-center">
-        <TwinAvatar mood="neutral" size={180} appearance={appearance} />
+        <TwinAvatar mood="neutral" size={180} appearance={appearance} useImage={useImage} />
         <div className="mt-7 text-center">
           <h2 className="text-txt text-[20px] font-extrabold">Creando tu gemelo</h2>
           <p className="text-sub text-[12px] mt-1">Esto solo tomará unos segundos…</p>

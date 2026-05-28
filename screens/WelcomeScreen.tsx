@@ -9,6 +9,7 @@ import type { ScreenId, TwinAppearance } from "@/lib/types";
 interface Props {
   onNav: (s: ScreenId) => void;
   appearance: TwinAppearance;
+  useImage?: boolean;
 }
 
 interface Slide {
@@ -63,7 +64,7 @@ const SLIDES: Slide[] = [
   },
 ];
 
-export function WelcomeScreen({ onNav, appearance }: Props) {
+export function WelcomeScreen({ onNav, appearance, useImage = false }: Props) {
   const [i, setI] = useState(0);
   const slide = SLIDES[i];
   const isLast = i === SLIDES.length - 1;
@@ -94,7 +95,7 @@ export function WelcomeScreen({ onNav, appearance }: Props) {
 
       <div className="flex-1 flex flex-col items-center justify-center text-center">
         <div className="relative">
-          <TwinAvatar mood={slide.twin} size={150} appearance={appearance} />
+          <TwinAvatar mood={slide.twin} size={150} appearance={appearance} useImage={useImage} />
           <div
             className="absolute -right-1 -bottom-1 w-10 h-10 rounded-full flex items-center justify-center"
             style={{

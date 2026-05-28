@@ -26,7 +26,7 @@ type Step = "searching" | "found" | "device" | "naming" | "success";
 
 export function PairDeviceScreen({ onNav, onPaired, returnTo }: Props) {
   const [step, setStep] = useState<Step>("searching");
-  const [name, setName] = useState(`Smartwatch de ${mockUser.name}`);
+  const [name, setName] = useState(`Huawei Watch Fit 4 de ${mockUser.name}`);
   const device = pairingCatalog[0]; // Huawei Watch D2
 
   useEffect(() => {
@@ -105,6 +105,7 @@ export function PairDeviceScreen({ onNav, onPaired, returnTo }: Props) {
             deviceName={device.name}
             description={device.description}
             color={device.color}
+            image={(device as any).image}
             onContinue={() => setStep("naming")}
             onBack={() => setStep("found")}
           />
@@ -219,12 +220,14 @@ function DeviceStep({
   deviceName,
   description,
   color,
+  image,
   onContinue,
   onBack,
 }: {
   deviceName: string;
   description: string;
   color: string;
+  image?: string;
   onContinue: () => void;
   onBack: () => void;
 }) {
@@ -240,18 +243,27 @@ function DeviceStep({
       }
     >
       <div
-        className="w-48 h-48 mx-auto rounded-full flex items-center justify-center"
+        className="w-52 h-52 mx-auto rounded-full flex items-center justify-center"
         style={{
           background: `radial-gradient(circle, ${color}33, ${color}0d 65%, transparent)`,
         }}
       >
-        <div className="relative w-32 h-32 rounded-2xl bg-gradient-to-br from-[#1A2030] to-[#0B0E14] border border-line flex items-center justify-center shadow-soft rotate-[-8deg]">
-          <Watch size={56} className="text-txt" />
-          <span className="absolute top-3 right-3 w-2 h-2 rounded-full bg-brand-red" />
-          <span className="absolute bottom-3 left-3 text-[8px] font-extrabold text-brand-blue">
-            10:24
-          </span>
-        </div>
+        {image ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={image}
+            alt={deviceName}
+            className="w-40 h-40 object-contain drop-shadow-[0_8px_24px_rgba(77,163,255,0.35)]"
+          />
+        ) : (
+          <div className="relative w-32 h-32 rounded-2xl bg-gradient-to-br from-[#1A2030] to-[#0B0E14] border border-line flex items-center justify-center shadow-soft rotate-[-8deg]">
+            <Watch size={56} className="text-txt" />
+            <span className="absolute top-3 right-3 w-2 h-2 rounded-full bg-brand-red" />
+            <span className="absolute bottom-3 left-3 text-[8px] font-extrabold text-brand-blue">
+              10:24
+            </span>
+          </div>
+        )}
       </div>
 
       <div className="mt-5 grid grid-cols-2 gap-2 w-full max-w-[300px] mx-auto">
@@ -308,8 +320,17 @@ function NamingStep({
         </>
       }
     >
-      <div className="w-32 h-32 mx-auto rounded-full bg-card2 border-2 border-line flex items-center justify-center">
-        <Watch size={56} style={{ color }} />
+      <div
+        className="w-36 h-36 mx-auto rounded-full flex items-center justify-center"
+        style={{ background: `radial-gradient(circle, ${color}22, transparent 70%)` }}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/images/smartwach.webp"
+          alt="Huawei Watch Fit 4"
+          className="w-28 h-28 object-contain"
+          onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
+        />
       </div>
 
       <div className="mt-5 w-full max-w-[320px] mx-auto">

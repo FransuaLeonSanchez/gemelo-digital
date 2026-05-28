@@ -21,6 +21,7 @@ import type { ScreenId, TwinAppearance } from "@/lib/types";
 interface Props {
   onNav: (s: ScreenId) => void;
   appearance: TwinAppearance;
+  useImage?: boolean;
 }
 
 function formatDelta(n: number) {
@@ -29,7 +30,7 @@ function formatDelta(n: number) {
   return rounded > 0 ? `+${rounded}` : `${rounded}`;
 }
 
-export function TwinScreen({ onNav, appearance }: Props) {
+export function TwinScreen({ onNav, appearance, useImage = false }: Props) {
   const [walk, setWalk] = useState(20);
   const [sleep, setSleep] = useState(6);
   const [carbs, setCarbs] = useState(60);
@@ -80,7 +81,7 @@ export function TwinScreen({ onNav, appearance }: Props) {
           transition: "background 500ms",
         }}
       >
-        <TwinAvatar mood={ts.mood} size={180} appearance={appearance} />
+        <TwinAvatar mood={ts.mood} size={180} appearance={appearance} useImage={useImage} />
         <div className="mt-3 text-center">
           <p className="text-sub text-[10px] uppercase tracking-[0.2em] font-bold">
             ICM proyectado

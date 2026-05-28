@@ -30,6 +30,7 @@ interface Props {
   onOpenSubIndex: (k: SubIndexKey) => void;
   appearance: TwinAppearance;
   icm: number;
+  useImage?: boolean;
   alertsUnread?: boolean;
   meals: Meal[];
 }
@@ -62,6 +63,7 @@ export function HomeScreen({
   appearance,
   icm,
   alertsUnread = true,
+  useImage = false,
   meals,
 }: Props) {
   const ts = twinState(icm);
@@ -109,7 +111,7 @@ export function HomeScreen({
       <div className="mt-3">
         <Card onClick={() => onNav("twin")}>
           <div className="flex items-center gap-3">
-            <TwinAvatar mood={ts.mood} size={86} appearance={appearance} />
+            <TwinAvatar mood={ts.mood} size={86} appearance={appearance} useImage={useImage} />
             <div className="flex-1">
               <p className="text-txt text-[14px] font-extrabold">Tu gemelo digital</p>
               <p className="text-sub text-[12px] mt-0.5 leading-snug">

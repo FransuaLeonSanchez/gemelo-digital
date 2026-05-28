@@ -50,9 +50,10 @@ export const peruStats = {
 export const pairingCatalog = [
   {
     type: "smartwatch" as const,
-    name: "Huawei Watch D2",
+    name: "Huawei Watch Fit 4",
     description: "HRV, frecuencia, pasos, sueño y presión arterial.",
     color: "#4DA3FF",
+    image: "/images/smartwach.webp",
   },
   {
     type: "cgm" as const,
@@ -158,7 +159,7 @@ export const projection5y = {
 
 export const devices = [
   { name: "Sensor CGM (glucosa)", connected: true, icon: "droplet" },
-  { name: "Smartwatch (HRV, pasos, sueño)", connected: true, icon: "watch" },
+  { name: "Huawei Watch Fit 4", connected: true, icon: "watch" },
   { name: "Báscula inteligente", connected: false, icon: "scale" },
 ];
 

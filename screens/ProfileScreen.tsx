@@ -24,6 +24,7 @@ import type { PairedDevice, ScreenId, TwinAppearance } from "@/lib/types";
 interface Props {
   onNav: (s: ScreenId) => void;
   appearance: TwinAppearance;
+  useImage?: boolean;
   pairedDevice: PairedDevice | null;
   onStartPair: () => void;
 }
@@ -34,7 +35,7 @@ const DEV_ICONS: Record<string, any> = {
   scale: Scale,
 };
 
-export function ProfileScreen({ onNav, appearance, pairedDevice, onStartPair }: Props) {
+export function ProfileScreen({ onNav, appearance, useImage = false, pairedDevice, onStartPair }: Props) {
   const ts = twinState(icmToday);
 
   // If paired during onboarding, replace the generic smartwatch entry.
@@ -51,7 +52,7 @@ export function ProfileScreen({ onNav, appearance, pairedDevice, onStartPair }: 
 
       <Card>
         <div className="flex items-center gap-3">
-          <TwinAvatar mood={ts.mood} size={96} appearance={appearance} />
+          <TwinAvatar mood={ts.mood} size={96} appearance={appearance} useImage={useImage} />
           <div className="flex-1 min-w-0">
             <p className="text-txt text-[18px] font-extrabold truncate">{mockUser.name}</p>
             <p className="text-sub text-[11px] truncate">{mockUser.email}</p>

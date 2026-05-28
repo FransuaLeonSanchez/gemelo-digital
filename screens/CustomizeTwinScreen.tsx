@@ -9,11 +9,12 @@ interface Props {
   appearance: TwinAppearance;
   setAppearance: (a: TwinAppearance) => void;
   userPhoto?: string | null;
+  useImage?: boolean;
 }
 
 const SKIN_SWATCHES = ["#F4D5B8", "#E8B98A", "#D29A6C", "#B07A4F", "#8B5A36"];
 
-export function CustomizeTwinScreen({ onNav, appearance, setAppearance, userPhoto }: Props) {
+export function CustomizeTwinScreen({ onNav, appearance, setAppearance, userPhoto, useImage = false }: Props) {
   const set = <K extends keyof TwinAppearance>(k: K, v: TwinAppearance[K]) =>
     setAppearance({ ...appearance, [k]: v });
 
@@ -39,7 +40,7 @@ export function CustomizeTwinScreen({ onNav, appearance, setAppearance, userPhot
           </>
         )}
         <div className="text-center">
-          <TwinAvatar mood="neutral" size={150} appearance={appearance} />
+          <TwinAvatar mood="neutral" size={150} appearance={appearance} useImage={useImage} />
           <p className="text-brand-blue text-[9px] uppercase tracking-wider font-bold -mt-2">
             Tu gemelo
           </p>
