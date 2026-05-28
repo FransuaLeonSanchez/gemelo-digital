@@ -21,6 +21,7 @@ import { DoctorReportScreen } from "@/screens/DoctorReportScreen";
 import { ProfileScreen } from "@/screens/ProfileScreen";
 import { icmToday } from "@/lib/mockData";
 import type {
+  Meal,
   PairedDevice,
   ScreenId,
   SubIndexKey,
@@ -50,6 +51,7 @@ export default function Page() {
     glasses: false,
     presentation: "masculina",
   });
+  const [meals, setMeals] = useState<Meal[]>([]);
 
   const isOnboarding = ONBOARDING.includes(screen);
 
@@ -102,6 +104,7 @@ export default function Page() {
             onNav={setScreen}
             appearance={appearance}
             icm={icmToday}
+            meals={meals}
             onOpenSubIndex={(k) => {
               setSubIndex(k);
               setScreen("subIndex");
@@ -111,7 +114,9 @@ export default function Page() {
         {screen === "twin" && (
           <TwinScreen onNav={setScreen} appearance={appearance} />
         )}
-        {screen === "log" && <LogInputScreen onNav={setScreen} />}
+        {screen === "log" && (
+          <LogInputScreen onNav={setScreen} meals={meals} setMeals={setMeals} />
+        )}
         {screen === "progress" && <ProgressScreen onNav={setScreen} />}
         {screen === "projection" && <Projection5yScreen onNav={setScreen} />}
         {screen === "recommendations" && <RecommendationsScreen />}

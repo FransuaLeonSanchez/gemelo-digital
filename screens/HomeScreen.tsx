@@ -8,6 +8,11 @@ import {
   Heart,
   Leaf,
   Sparkles,
+  Coffee,
+  Soup,
+  Apple,
+  Check,
+  UtensilsCrossed,
 } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { Pill } from "@/components/ui/Pill";
@@ -18,7 +23,7 @@ import { Sparkline } from "@/components/charts/Sparkline";
 import { TwinAvatar } from "@/components/Twin/TwinAvatar";
 import { glucoseDay, mockUser, recommendations, subIndices } from "@/lib/mockData";
 import { twinState } from "@/lib/icm";
-import type { ScreenId, SubIndexKey, TwinAppearance } from "@/lib/types";
+import type { Meal, MealType, ScreenId, SubIndexKey, TwinAppearance } from "@/lib/types";
 
 interface Props {
   onNav: (s: ScreenId) => void;
@@ -26,7 +31,22 @@ interface Props {
   appearance: TwinAppearance;
   icm: number;
   alertsUnread?: boolean;
+  meals: Meal[];
 }
+
+const MEAL_ICONS: Record<MealType, any> = {
+  Desayuno: Coffee,
+  Almuerzo: Soup,
+  Cena: Moon,
+  Snack: Apple,
+};
+const MEAL_COLORS: Record<MealType, string> = {
+  Desayuno: "#FFB23E",
+  Almuerzo: "#4DA3FF",
+  Cena: "#A78BFA",
+  Snack: "#37D67A",
+};
+const MEAL_ORDER: MealType[] = ["Desayuno", "Almuerzo", "Cena", "Snack"];
 
 const ICONS: Record<string, any> = {
   Glucosa: Droplet,
@@ -36,7 +56,14 @@ const ICONS: Record<string, any> = {
   Nutrición: Leaf,
 };
 
-export function HomeScreen({ onNav, onOpenSubIndex, appearance, icm, alertsUnread = true }: Props) {
+export function HomeScreen({
+  onNav,
+  onOpenSubIndex,
+  appearance,
+  icm,
+  alertsUnread = true,
+  meals,
+}: Props) {
   const ts = twinState(icm);
   const peak = Math.max(...glucoseDay);
   const peakIdx = glucoseDay.indexOf(peak);
@@ -123,6 +150,90 @@ export function HomeScreen({ onNav, onOpenSubIndex, appearance, icm, alertsUnrea
           );
         })}
       </div>
+
+      <SectionTitle
+        right={
+          <button
+            onClick={() => onNav("log")}
+            className="text-brand-blue text-[11px] font-extrabold inline-flex items-center gap-1"
+          >
+            Registrar <ChevronRight size={12} />
+          </button>
+        }
+      >
+        Tus comidas de hoy
+      </SectionTitle>
+      <Card onClick={() => onNav("log")}>
+        {(() => {
+          const totalKcal = meals.reduce((a, m) => a + m.kcal, 0);
+          const totalCarbs = meals.reduce((a, m) => a + m.carbs, 0);
+          const filled = meals.length;
+          return (
+            <>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-9 h-9 rounded-xl bg-brand-blue/15 text-brand-blue flex items-center justify-center">
+                    <UtensilsCrossed size={16} />
+                  </div>
+                  <div>
+                    <p className="text-txt text-[13px] font-extrabold leading-tight">
+                      {filled === 0
+                        ? "Aún sin registrar"
+                        : `${filled} ${filled === 1 ? "comida" : "comidas"} hoy`}
+                    </p>
+                    <p className="text-sub text-[11px]">
+                      {filled === 0
+                        ? "Toca para registrar tu primera comida"
+                        : `${totalKcal} kcal · ${totalCarbs} g carbos`}
+                    </p>
+                  </div>
+                </div>
+                <ChevronRight size={16} className="text-sub" />
+              </div>
+
+              <div className="mt-3 grid grid-cols-4 gap-2">
+                {MEAL_ORDER.map((t) => {
+                  const meal = meals.find((m) => m.type === t);
+                  const Icon = MEAL_ICONS[t];
+                  const color = MEAL_COLORS[t];
+                  const done = !!meal;
+                  return (
+                    <div
+                      key={t}
+                      className="rounded-xl bg-card2 border border-line px-1.5 py-2 text-center relative"
+                      style={done ? { borderColor: `${color}55`, backgroundColor: `${color}14` } : {}}
+                    >
+                      <div
+                        className="w-7 h-7 mx-auto rounded-lg flex items-center justify-center"
+                        style={{
+                          backgroundColor: done ? `${color}33` : "#262D3D",
+                          color: done ? color : "#5C6678",
+                        }}
+                      >
+                        <Icon size={14} />
+                      </div>
+                      <p
+                        className="text-[10px] font-extrabold mt-1"
+                        style={{ color: done ? color : "#8A95AC" }}
+                      >
+                        {t}
+                      </p>
+                      {done && (
+                        <span
+                          className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-brand-teal text-bg flex items-center justify-center"
+                          style={{ boxShadow: "0 0 0 2px #161B27" }}
+                        >
+                          <Check size={9} strokeWidth={3.5} />
+                        </span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </>
+          );
+        })()}
+      </Card>
 
       <SectionTitle>Glucosa de hoy</SectionTitle>
       <Card>

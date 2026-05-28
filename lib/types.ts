@@ -26,6 +26,21 @@ export interface PairedDevice {
   type: "smartwatch" | "cgm" | "scale";
 }
 
+export type MealType = "Desayuno" | "Almuerzo" | "Cena" | "Snack";
+
+export type GlucemicLoad = "Baja" | "Media" | "Alta";
+
+export interface Meal {
+  type: MealType;
+  name: string;
+  carbs: number;          // g
+  kcal: number;
+  load: GlucemicLoad;
+  predictedPeak: number;  // mg/dL ~60 min
+  time: string;           // HH:MM (local)
+  photo?: string | null;  // data URL or asset path
+}
+
 export type SubIndexKey = "Glucosa" | "Actividad" | "Sueño" | "Estrés" | "Nutrición";
 
 export interface SubIndex {

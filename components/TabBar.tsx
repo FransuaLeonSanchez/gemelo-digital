@@ -1,5 +1,5 @@
 "use client";
-import { Home, BarChart3, Plus, UserCircle2, Sparkles } from "lucide-react";
+import { Home, BarChart3, UtensilsCrossed, UserCircle2, Sparkles } from "lucide-react";
 import type { ScreenId } from "@/lib/types";
 
 interface Props {
@@ -32,14 +32,14 @@ export function TabBar({ active, onNav }: Props) {
           ))}
         </div>
 
-        {/* Center + button */}
+        {/* Center plate button */}
         <button
           onClick={() => onNav("log")}
           className="absolute left-1/2 -translate-x-1/2 -top-6 w-14 h-14 rounded-full bg-brand-blue text-bg flex items-center justify-center active:scale-95 transition"
           style={{ boxShadow: "0 10px 24px rgba(77,163,255,0.45), 0 0 0 6px #0B0E14" }}
-          aria-label="Registrar"
+          aria-label="Registrar comida"
         >
-          <Plus size={26} strokeWidth={3} />
+          <UtensilsCrossed size={22} strokeWidth={2.6} />
         </button>
       </div>
     </div>
