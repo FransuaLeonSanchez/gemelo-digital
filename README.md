@@ -20,13 +20,39 @@ llamadas de red.
 - Animaciones con CSS keyframes (sin librerías pesadas)
 - Toda la lógica y los datos viven en `lib/mockData.ts` y `lib/icm.ts`
 
-## Cómo correrlo
+## Cómo correrlo (local)
 
 ```bash
 npm install
 npm run dev
 # http://localhost:3000
 ```
+
+> Si alternaste antes entre `npm run build` y `npm run dev`, borra `.next/` para
+> evitar caché mixto: `rm -rf .next`.
+
+## Deploy en Vercel
+
+La app está pensada para desplegarse en Vercel sin configuración adicional.
+Si ves un **404 NOT_FOUND** o un HTML con solo `<div class="container">`, el
+problema es de configuración del proyecto en Vercel:
+
+1. **Root Directory.** Settings → General → **Root Directory** debe apuntar a la
+   carpeta donde vive `package.json`. Si subiste `gemelo-digital/` como
+   subcarpeta de un repo, escribe `gemelo-digital` aquí.
+   Si subiste el contenido de `gemelo-digital/` como raíz del repo, déjalo
+   vacío.
+2. **Framework Preset.** Debe ser **Next.js** (se autodetecta cuando hay
+   `next` en `package.json`).
+3. **Build Command / Output Directory.** Déjalos vacíos (Vercel usa
+   `next build` y `.next` por defecto).
+4. **Node version.** El `engines.node` del `package.json` exige Node ≥ 18.18.
+   Vercel usa Node 20 por defecto: compatible.
+
+Después de cambiar la Root Directory, dispara un **Redeploy** sin caché.
+
+> No incluimos `vercel.json` a propósito: Vercel autodetecta todo. Añadir uno
+> con valores incorrectos es la causa más común de despliegues vacíos.
 
 ## Estructura
 
