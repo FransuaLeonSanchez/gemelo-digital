@@ -7,6 +7,7 @@ import { WelcomeScreen } from "@/screens/WelcomeScreen";
 import { CreateTwinCameraScreen } from "@/screens/CreateTwinCameraScreen";
 import { CustomizeTwinScreen } from "@/screens/CustomizeTwinScreen";
 import { PairDeviceScreen } from "@/screens/PairDeviceScreen";
+import { ProfileFormScreen } from "@/screens/ProfileFormScreen";
 import { ProcessingScreen } from "@/screens/ProcessingScreen";
 import { HomeScreen } from "@/screens/HomeScreen";
 import { TwinScreen } from "@/screens/TwinScreen";
@@ -32,6 +33,7 @@ const ONBOARDING: ScreenId[] = [
   "splash",
   "createTwin",
   "customize",
+  "profileForm",
   "pairDevice",
   "processing",
 ];
@@ -44,9 +46,9 @@ export default function Page() {
   const [pairReturnTo, setPairReturnTo] = useState<ScreenId>("processing");
   const [appearance, setAppearance] = useState<TwinAppearance>({
     skinTone: 1,
-    hair: "largo",
+    hair: "corto",
     glasses: false,
-    presentation: "femenina",
+    presentation: "masculina",
   });
 
   const isOnboarding = ONBOARDING.includes(screen);
@@ -72,9 +74,9 @@ export default function Page() {
           <CustomizeTwinScreen
             onNav={(s) => {
               if (s === "processing") {
-                // After customize, route through pair-device, then to processing.
+                // After customize, collect profile data → pair device → processing.
                 setPairReturnTo("processing");
-                setScreen("pairDevice");
+                setScreen("profileForm");
               } else {
                 setScreen(s);
               }
@@ -84,6 +86,7 @@ export default function Page() {
             userPhoto={userPhoto}
           />
         )}
+        {screen === "profileForm" && <ProfileFormScreen onNav={setScreen} />}
         {screen === "pairDevice" && (
           <PairDeviceScreen
             onNav={setScreen}

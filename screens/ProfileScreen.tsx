@@ -55,7 +55,9 @@ export function ProfileScreen({ onNav, appearance, pairedDevice, onStartPair }: 
           <div className="flex-1 min-w-0">
             <p className="text-txt text-[18px] font-extrabold truncate">{mockUser.name}</p>
             <p className="text-sub text-[11px] truncate">{mockUser.email}</p>
-            <p className="text-sub text-[11px] mt-0.5">Adulto · módulo hormonal femenino</p>
+            <p className="text-sub text-[11px] mt-0.5">
+              Adulto joven · {mockUser.age} años · {mockUser.city}
+            </p>
             <div className="mt-2">
               <Pill color={ts.color}>{ts.label}</Pill>
             </div>

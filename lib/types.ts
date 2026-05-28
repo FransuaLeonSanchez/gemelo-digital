@@ -6,6 +6,7 @@ export type ScreenId =
   | "splash"
   | "createTwin"
   | "customize"
+  | "profileForm"
   | "pairDevice"
   | "processing"
   | "home"

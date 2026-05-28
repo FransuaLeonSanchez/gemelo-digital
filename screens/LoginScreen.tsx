@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Mail, Loader2, Heart, Droplet, Moon, Leaf, Activity, Sparkles } from "lucide-react";
+import { Mail, Loader2, Heart, Droplet, Moon, Leaf, Activity } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import type { ScreenId, TwinAppearance } from "@/lib/types";
 
@@ -109,18 +109,18 @@ export function LoginScreen({ onNav }: Props) {
 
   return (
     <div className="flex flex-col h-full px-5 pb-6">
-      {/* TITLE — siempre arriba del todo */}
-      <div className="text-center pt-1 pb-2">
-        <p className="text-brand-blue text-[10px] font-extrabold tracking-[0.3em] uppercase">
+      {/* TITLE — siempre arriba del todo, más grande */}
+      <div className="text-center pt-2 pb-1">
+        <h2 className="text-brand-blue text-[20px] font-extrabold tracking-[0.18em] uppercase leading-none">
           Gemelo Digital
-        </p>
-        <p className="text-sub text-[10px] tracking-[0.25em] uppercase mt-0.5">
+        </h2>
+        <p className="text-sub text-[12px] tracking-[0.32em] uppercase mt-1.5 font-bold">
           Metabólico
         </p>
       </div>
 
-      {/* HERO IMAGE */}
-      <div className="relative w-full aspect-[16/11] rounded-3xl overflow-hidden border border-line bg-card2 mt-1">
+      {/* HERO IMAGE — bajado un poco con margen superior */}
+      <div className="relative w-full aspect-[16/11] rounded-3xl overflow-hidden border border-line bg-card2 mt-7">
         {imgOk ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -135,25 +135,13 @@ export function LoginScreen({ onNav }: Props) {
         )}
         {/* Bottom gradient + caption for legibility regardless of image */}
         <div className="absolute inset-0 bg-gradient-to-t from-bg/95 via-bg/10 to-transparent" />
-        <div className="absolute bottom-3 left-4 right-4 flex items-end justify-between">
-          <div>
-            <p className="text-white text-[10px] uppercase tracking-[0.2em] font-extrabold opacity-80">
-              Prevención metabólica
-            </p>
-            <p className="text-white text-[13px] font-extrabold mt-0.5">
-              Tu salud, en tiempo real
-            </p>
-          </div>
-          <span
-            className="inline-flex items-center gap-1 text-[10px] font-extrabold px-2 py-1 rounded-full"
-            style={{
-              backgroundColor: "rgba(31,208,163,0.15)",
-              border: "1px solid rgba(31,208,163,0.45)",
-              color: "#1FD0A3",
-            }}
-          >
-            <Sparkles size={10} /> IA
-          </span>
+        <div className="absolute bottom-3 left-4 right-4">
+          <p className="text-white text-[10px] uppercase tracking-[0.2em] font-extrabold opacity-80">
+            Prevención metabólica
+          </p>
+          <p className="text-white text-[13px] font-extrabold mt-0.5">
+            Tu salud, en tiempo real
+          </p>
         </div>
       </div>
 
