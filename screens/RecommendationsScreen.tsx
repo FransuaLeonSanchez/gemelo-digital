@@ -49,7 +49,7 @@ export function RecommendationsScreen() {
                     className={`mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-extrabold transition ${
                       isDone
                         ? "bg-brand-teal/15 text-brand-teal border border-brand-teal/40"
-                        : "bg-card2 text-sub border border-line"
+                        : "bg-card2 text-sub border border-white/[0.08]"
                     }`}
                   >
                     <Check size={12} />

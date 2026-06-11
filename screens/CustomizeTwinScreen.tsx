@@ -57,7 +57,7 @@ export function CustomizeTwinScreen({ onNav, appearance, setAppearance, userPhot
                 className="w-9 h-9 rounded-full transition-transform active:scale-95"
                 style={{
                   backgroundColor: c,
-                  outline: appearance.skinTone === i ? "2px solid #4DA3FF" : "2px solid transparent",
+                  outline: appearance.skinTone === i ? "2px solid #60A5FA" : "2px solid transparent",
                   outlineOffset: 2,
                 }}
                 aria-label={`piel ${i + 1}`}
@@ -126,8 +126,8 @@ function Chips<T extends string>({
             onClick={() => onChange(o)}
             className={`px-3 py-1.5 rounded-full text-[12px] font-bold transition ${
               active
-                ? "bg-brand-blue text-bg"
-                : "bg-card2 text-sub border border-line"
+                ? "bg-brand-gradient text-white shadow-[0_6px_16px_-6px_rgba(99,124,246,0.6)]"
+                : "bg-card2 text-sub border border-white/[0.08]"
             }`}
           >
             {o}

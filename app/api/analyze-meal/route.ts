@@ -9,9 +9,18 @@ import { NextRequest, NextResponse } from "next/server";
  * clave inválida), responde { ok: false } y el cliente usa su estimación local.
  */
 
-// gemini-2.5-flash es el modelo con cuota activa en el proyecto actual;
-// si falla se intenta 2.5-flash-lite (más barato) antes de caer al mock local.
-const GEMINI_MODELS = ["gemini-2.5-flash", "gemini-2.5-flash-lite"];
+// Cadena de modelos con cuota activa en este proyecto (verificada 2026-06-11):
+//   gemini-2.5-flash (mejor calidad) → 2.5-flash-lite → 3.1-flash-lite (el más rápido).
+// gemini-2.0-flash queda fuera: su cuota está agotada (429 permanente).
+const GEMINI_MODELS = [
+  "gemini-2.5-flash",
+  "gemini-2.5-flash-lite",
+  "gemini-3.1-flash-lite",
+];
+// Errores transitorios (p. ej. 503 "high demand"): se reintenta una vez con
+// backoff corto antes de pasar al siguiente modelo.
+const RETRYABLE_STATUS = new Set([500, 502, 503, 504]);
+const RETRY_BACKOFF_MS = 800;
 const geminiUrl = (model: string) =>
   `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
 
@@ -47,14 +56,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: false, reason: "no-key-or-image" });
   }
 
-  try {
-    let data: any = null;
-    let lastStatus = 0;
-
-    for (const model of GEMINI_MODELS) {
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 20000);
-      const res = await fetch(geminiUrl(model), {
+  const callGemini = async (model: string): Promise<Response | null> => {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 20000);
+    try {
+      return await fetch(geminiUrl(model), {
         method: "POST",
         signal: controller.signal,
         headers: {
@@ -80,15 +86,39 @@ export async function POST(req: NextRequest) {
             responseMimeType: "application/json",
           },
         }),
-      }).finally(() => clearTimeout(timeout));
+      });
+    } catch (e) {
+      // Timeout o error de red: no aborta la cadena, se prueba el siguiente modelo.
+      console.error(`Gemini ${model} network/timeout:`, (e as Error)?.name);
+      return null;
+    } finally {
+      clearTimeout(timeout);
+    }
+  };
 
-      if (res.ok) {
-        data = await res.json();
-        break;
+  try {
+    let data: any = null;
+    let usedModel = "";
+    let lastStatus = 0;
+
+    outer: for (const model of GEMINI_MODELS) {
+      for (let attempt = 0; attempt < 2; attempt++) {
+        const res = await callGemini(model);
+        if (res === null) break; // red/timeout → siguiente modelo
+
+        if (res.ok) {
+          data = await res.json();
+          usedModel = model;
+          break outer;
+        }
+
+        lastStatus = res.status;
+        const err = await res.text();
+        console.error(`Gemini ${model} error`, res.status, err.slice(0, 200));
+
+        if (!RETRYABLE_STATUS.has(res.status)) break; // 4xx (cuota, clave) → siguiente modelo
+        if (attempt === 0) await new Promise((r) => setTimeout(r, RETRY_BACKOFF_MS));
       }
-      lastStatus = res.status;
-      const err = await res.text();
-      console.error(`Gemini ${model} error`, res.status, err.slice(0, 200));
     }
 
     if (!data) {
@@ -107,9 +137,17 @@ export async function POST(req: NextRequest) {
       ? parsed.load
       : "Media";
 
+    // confidence 0 es un valor legítimo ("no es comida") y el cliente lo usa
+    // para caer al estimado local — no aplastarlo con un default.
+    const rawConfidence = Number(parsed.confidence);
+    const confidence = Number.isFinite(rawConfidence)
+      ? Math.max(0, Math.min(100, Math.round(rawConfidence)))
+      : 80;
+
     return NextResponse.json({
       ok: true,
       source: "gemini",
+      model: usedModel,
       meal: {
         name: String(parsed.name ?? "Plato detectado").slice(0, 60),
         carbs: Math.max(0, Math.min(300, Math.round(Number(parsed.carbs) || 0))),
@@ -119,7 +157,7 @@ export async function POST(req: NextRequest) {
           90,
           Math.min(220, Math.round(Number(parsed.predictedPeak) || 130)),
         ),
-        confidence: Math.max(0, Math.min(100, Math.round(Number(parsed.confidence) || 80))),
+        confidence,
       },
     });
   } catch (e) {

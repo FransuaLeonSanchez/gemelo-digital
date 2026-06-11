@@ -8,6 +8,7 @@ interface Props {
   icon?: ReactNode;
   className?: string;
   full?: boolean;
+  disabled?: boolean;
 }
 
 export function Button({
@@ -17,17 +18,19 @@ export function Button({
   icon,
   className = "",
   full = true,
+  disabled,
 }: Props) {
   const styles =
     variant === "primary"
-      ? "bg-brand-blue text-bg font-extrabold"
+      ? "text-white font-bold border border-white/10 bg-brand-gradient shadow-[0_10px_24px_-8px_rgba(99,124,246,0.55)]"
       : variant === "danger"
-      ? "bg-transparent border border-line text-brand-red font-bold"
-      : "bg-transparent border border-line text-sub font-bold";
+      ? "bg-brand-red/10 border border-brand-red/25 text-brand-red font-bold"
+      : "bg-white/[0.04] border border-white/[0.08] text-txt font-bold";
   return (
     <button
       onClick={onClick}
-      className={`${full ? "w-full" : ""} h-12 rounded-2xl px-5 inline-flex items-center justify-center gap-2 active:scale-[0.98] transition-transform ${styles} ${className}`}
+      disabled={disabled}
+      className={`${full ? "w-full" : ""} h-12 rounded-full px-6 inline-flex items-center justify-center gap-2 text-[14px] active:scale-[0.97] transition-all duration-150 disabled:opacity-50 ${styles} ${className}`}
     >
       {icon}
       <span>{children}</span>

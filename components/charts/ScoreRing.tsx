@@ -36,7 +36,7 @@ export function ScoreRing({
           cx={size / 2}
           cy={size / 2}
           r={r}
-          stroke="#262D3D"
+          stroke={`${color}1A`}
           strokeWidth={stroke}
           fill="none"
         />
@@ -50,12 +50,15 @@ export function ScoreRing({
           fill="none"
           strokeDasharray={c}
           strokeDashoffset={offset}
-          style={{ transition: "stroke-dashoffset 900ms cubic-bezier(.2,.7,.2,1), stroke 400ms" }}
+          style={{
+            transition: "stroke-dashoffset 900ms cubic-bezier(.2,.7,.2,1), stroke 400ms",
+            filter: `drop-shadow(0 0 6px ${color}59)`,
+          }}
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <span
-          className="font-extrabold leading-none"
+          className="font-extrabold leading-none tracking-tight tabular-nums"
           style={{
             color,
             fontSize: size >= 130 ? 40 : size >= 90 ? 28 : 22,
@@ -64,8 +67,8 @@ export function ScoreRing({
           {bigLabel ?? Math.round(value)}
         </span>
         <span
-          className="text-sub uppercase tracking-wider font-bold mt-1"
-          style={{ fontSize: size >= 130 ? 11 : 10 }}
+          className="text-sub uppercase tracking-[0.18em] font-bold mt-1.5"
+          style={{ fontSize: size >= 130 ? 10 : 9 }}
         >
           {label}
         </span>

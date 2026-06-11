@@ -32,7 +32,7 @@ export function DualLine({ series, labels, width = 320, height = 170 }: Props) {
           x2={width - pad}
           y1={pad + h * t}
           y2={pad + h * t}
-          stroke="#262D3D"
+          stroke="#222C42"
           strokeDasharray="3 4"
         />
       ))}
@@ -74,7 +74,7 @@ export function DualLine({ series, labels, width = 320, height = 170 }: Props) {
           x={pad + i * step}
           y={height - 2}
           fontSize="10"
-          fill="#8A95AC"
+          fill="#94A0B8"
           textAnchor="middle"
         >
           {l}

@@ -22,7 +22,7 @@ export function ProgressScreen({ onNav }: Props) {
           <p className="text-sub text-[12px] uppercase tracking-wider font-bold">
             ICM últimos 7 días
           </p>
-          <Pill color="#1FD0A3">↓ tendencia</Pill>
+          <Pill color="#2DD4BF">↓ tendencia</Pill>
         </div>
         <div className="mt-3">
           <BarsWeek data={weekICM} />
@@ -46,7 +46,7 @@ export function ProgressScreen({ onNav }: Props) {
       </div>
 
       <SectionTitle>Riesgo a 5 años</SectionTitle>
-      <Card accent="#FFB23E" onClick={() => onNav("projection")}>
+      <Card accent="#FBBF24" onClick={() => onNav("projection")}>
         <div className="flex items-start gap-3">
           <div className="flex-1">
             <p className="text-brand-amber text-[40px] font-extrabold leading-none">

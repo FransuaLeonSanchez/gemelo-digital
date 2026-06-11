@@ -80,10 +80,10 @@ export function ProfileScreen({ onNav, appearance, useImage = false, pairedDevic
 
       <SectionTitle>Señales en vivo (wearable)</SectionTitle>
       <div className="grid grid-cols-2 gap-3">
-        <LiveMetric icon={Heart} color="#FF5E6C" label="Frecuencia" value="76 bpm" />
-        <LiveMetric icon={Activity} color="#37D67A" label="Pasos hoy" value="4,820" />
+        <LiveMetric icon={Heart} color="#FB7185" label="Frecuencia" value="76 bpm" />
+        <LiveMetric icon={Activity} color="#4ADE80" label="Pasos hoy" value="4,820" />
         <LiveMetric icon={Moon} color="#A78BFA" label="Sueño" value="5h 40m" />
-        <LiveMetric icon={Droplet} color="#4DA3FF" label="Presión" value="124/82" />
+        <LiveMetric icon={Droplet} color="#60A5FA" label="Presión" value="124/82" />
       </div>
 
       <SectionTitle
@@ -107,8 +107,8 @@ export function ProfileScreen({ onNav, appearance, useImage = false, pairedDevic
                 <div
                   className="w-10 h-10 rounded-xl flex items-center justify-center"
                   style={{
-                    backgroundColor: d.connected ? "#1FD0A322" : "#262D3D",
-                    color: d.connected ? "#1FD0A3" : "#8A95AC",
+                    backgroundColor: d.connected ? "#2DD4BF22" : "#222C42",
+                    color: d.connected ? "#2DD4BF" : "#94A0B8",
                   }}
                 >
                   <Icon size={18} />
@@ -117,7 +117,7 @@ export function ProfileScreen({ onNav, appearance, useImage = false, pairedDevic
                   <p className="text-txt text-[13px] font-extrabold truncate">{d.name}</p>
                 </div>
                 {d.connected ? (
-                  <Pill color="#1FD0A3">● Conectado</Pill>
+                  <Pill color="#2DD4BF">● Conectado</Pill>
                 ) : (
                   <button
                     onClick={onStartPair}

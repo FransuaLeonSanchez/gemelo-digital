@@ -11,8 +11,8 @@ export function SectionTitle({
   className?: string;
 }) {
   return (
-    <div className={`flex items-center justify-between mb-2 mt-4 ${className}`}>
-      <h3 className="text-sub text-[13px] font-bold uppercase tracking-wide">
+    <div className={`flex items-center justify-between mb-2.5 mt-5 ${className}`}>
+      <h3 className="text-sub text-[11px] font-extrabold uppercase tracking-[0.16em]">
         {children}
       </h3>
       {right}

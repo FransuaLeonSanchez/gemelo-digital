@@ -25,7 +25,7 @@ export function AlertsScreen({ onNav }: Props) {
           return (
             <li
               key={i}
-              className="bg-card border border-line rounded-2xl p-3 flex items-start gap-3"
+              className="bg-card border border-white/[0.08] rounded-[20px] p-3 flex items-start gap-3"
             >
               <div
                 className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"

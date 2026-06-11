@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Mail, Loader2, Heart, Droplet, Moon, Leaf, Activity } from "lucide-react";
+import { Mail, Loader2, Heart, Droplet, Moon, Leaf, Activity, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import type { ScreenId, TwinAppearance } from "@/lib/types";
 
@@ -33,50 +33,50 @@ function HeroFallback() {
         className="absolute inset-0"
         style={{
           background:
-            "radial-gradient(120% 90% at 50% 30%, #1C2A45 0%, #0F1422 70%), linear-gradient(180deg, #11151F, #0B0E14)",
+            "radial-gradient(120% 90% at 50% 30%, #1B2845 0%, #0E1424 70%), linear-gradient(180deg, #0E1422, #090D17)",
         }}
       />
       <svg viewBox="0 0 400 240" className="absolute inset-0 w-full h-full">
         <defs>
           <radialGradient id="halo" cx="50%" cy="45%" r="55%">
-            <stop offset="0%" stopColor="#4DA3FF" stopOpacity="0.45" />
-            <stop offset="100%" stopColor="#4DA3FF" stopOpacity="0" />
+            <stop offset="0%" stopColor="#60A5FA" stopOpacity="0.45" />
+            <stop offset="100%" stopColor="#60A5FA" stopOpacity="0" />
           </radialGradient>
         </defs>
         <circle cx="200" cy="115" r="110" fill="url(#halo)" />
         {/* Phone */}
         <g transform="translate(168 50)">
-          <rect width="64" height="130" rx="14" fill="#0B0E14" stroke="#4DA3FF" strokeOpacity="0.8" strokeWidth="1.5" />
+          <rect width="64" height="130" rx="14" fill="#090D17" stroke="#60A5FA" strokeOpacity="0.8" strokeWidth="1.5" />
           <rect x="6" y="14" width="52" height="100" rx="8" fill="#0F1525" />
-          <circle cx="32" cy="6" r="2.5" fill="#262D3D" />
+          <circle cx="32" cy="6" r="2.5" fill="#222C42" />
           <polyline
             points="10,80 18,80 22,62 30,98 36,72 44,86 54,86"
             fill="none"
-            stroke="#4DA3FF"
+            stroke="#60A5FA"
             strokeWidth="2.2"
             strokeLinecap="round"
             strokeLinejoin="round"
           />
-          <text x="32" y="42" fontSize="10" fontWeight="800" textAnchor="middle" fill="#1FD0A3">
+          <text x="32" y="42" fontSize="10" fontWeight="800" textAnchor="middle" fill="#2DD4BF">
             ICM 59
           </text>
         </g>
         {/* Telemetry dots */}
-        <g fill="#1FD0A3">
+        <g fill="#2DD4BF">
           <circle cx="120" cy="40" r="3" />
           <circle cx="290" cy="200" r="3" />
         </g>
-        <g fill="#4DA3FF">
+        <g fill="#60A5FA">
           <circle cx="80" cy="170" r="3" />
           <circle cx="320" cy="60" r="3" />
         </g>
       </svg>
       {/* Floating icon chips */}
-      <Chip className="left-3 top-3" color="#FF5E6C" Icon={Heart} />
-      <Chip className="right-3 top-6" color="#4DA3FF" Icon={Droplet} />
+      <Chip className="left-3 top-3" color="#FB7185" Icon={Heart} />
+      <Chip className="right-3 top-6" color="#60A5FA" Icon={Droplet} />
       <Chip className="left-4 bottom-6" color="#A78BFA" Icon={Moon} />
-      <Chip className="right-4 bottom-3" color="#37D67A" Icon={Activity} />
-      <Chip className="left-1/2 -translate-x-1/2 top-2" color="#1FD0A3" Icon={Leaf} />
+      <Chip className="right-4 bottom-3" color="#4ADE80" Icon={Activity} />
+      <Chip className="left-1/2 -translate-x-1/2 top-2" color="#2DD4BF" Icon={Leaf} />
     </div>
   );
 }
@@ -108,19 +108,22 @@ export function LoginScreen({ onNav }: Props) {
   };
 
   return (
-    <div className="flex flex-col h-full px-5 pb-6">
-      {/* TITLE — siempre arriba del todo, más grande */}
-      <div className="text-center pt-2 pb-1">
-        <h2 className="text-brand-blue text-[30px] font-extrabold tracking-[0.22em] uppercase leading-none">
+    <div className="flex flex-col h-full px-6 pb-6">
+      {/* Wordmark */}
+      <div className="text-center pt-3 pb-1">
+        <h2
+          className="inline-block text-[32px] font-extrabold tracking-[0.24em] uppercase leading-none bg-clip-text text-transparent"
+          style={{ backgroundImage: "linear-gradient(120deg, #60A5FA 10%, #A78BFA 90%)" }}
+        >
           GEMA
         </h2>
-        <p className="text-sub text-[11px] tracking-[0.3em] uppercase mt-1.5 font-bold">
+        <p className="text-sub text-[10.5px] tracking-[0.32em] uppercase mt-2 font-bold">
           Tu gemelo metabólico
         </p>
       </div>
 
-      {/* HERO IMAGE — bajado un poco con margen superior */}
-      <div className="relative w-full aspect-[16/11] rounded-3xl overflow-hidden border border-line bg-card2 mt-7">
+      {/* Hero */}
+      <div className="relative w-full aspect-[16/11] rounded-3xl overflow-hidden border border-white/[0.08] bg-card2 mt-6 shadow-card">
         {imgOk ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -134,23 +137,23 @@ export function LoginScreen({ onNav }: Props) {
           <HeroFallback />
         )}
         {/* Bottom gradient + caption for legibility regardless of image */}
-        <div className="absolute inset-0 bg-gradient-to-t from-bg/95 via-bg/10 to-transparent" />
-        <div className="absolute bottom-3 left-4 right-4">
-          <p className="text-white text-[10px] uppercase tracking-[0.2em] font-extrabold opacity-80">
+        <div className="absolute inset-0 bg-gradient-to-t from-bg/95 via-bg/15 to-transparent" />
+        <div className="absolute bottom-3.5 left-4 right-4">
+          <p className="text-brand-blue text-[9.5px] uppercase tracking-[0.24em] font-extrabold">
             Prevención metabólica
           </p>
-          <p className="text-white text-[13px] font-extrabold mt-0.5">
+          <p className="text-white text-[14px] font-extrabold mt-0.5 tracking-tight">
             Tu salud, en tiempo real
           </p>
         </div>
       </div>
 
-      {/* WELCOME */}
+      {/* Welcome */}
       <div className="flex-1 flex flex-col items-center justify-center text-center mt-3">
-        <h1 className="text-txt text-[26px] font-extrabold leading-tight">
+        <h1 className="text-txt text-[25px] font-extrabold leading-tight tracking-tight">
           Bienvenido
         </h1>
-        <p className="text-sub text-[13px] mt-2 max-w-[300px] leading-snug">
+        <p className="text-sub text-[13px] mt-2 max-w-[300px] leading-relaxed">
           Tu gemelo digital aprende de ti y previene el síndrome metabólico
           antes de que aparezca.
         </p>
@@ -158,7 +161,7 @@ export function LoginScreen({ onNav }: Props) {
 
       {phase === "email-form" ? (
         <div className="space-y-3">
-          <div className="bg-card border border-line rounded-2xl px-4 py-3 flex items-center gap-2">
+          <div className="bg-card border border-white/[0.08] rounded-full px-5 h-12 flex items-center gap-2.5 focus-within:border-brand-blue/50 transition-colors">
             <Mail size={16} className="text-sub" />
             <input
               autoFocus
@@ -179,7 +182,7 @@ export function LoginScreen({ onNav }: Props) {
           <button
             onClick={googleSignIn}
             disabled={phase === "google"}
-            className="w-full h-12 rounded-2xl bg-white text-[#1F1F1F] font-extrabold flex items-center justify-center gap-3 active:scale-[0.98] transition disabled:opacity-80"
+            className="w-full h-12 rounded-full bg-white text-[#1F1F1F] text-[14px] font-bold flex items-center justify-center gap-3 active:scale-[0.97] transition disabled:opacity-80 shadow-[0_10px_24px_-10px_rgba(255,255,255,0.25)]"
           >
             {phase === "google" ? (
               <>
@@ -200,9 +203,13 @@ export function LoginScreen({ onNav }: Props) {
           >
             Continuar con email
           </Button>
-          <p className="text-hint text-[10px] text-center pt-1 leading-snug">
-            Al continuar aceptas los Términos y la Política de Privacidad.<br />
-            Cumplimos con la Ley N° 29733 (Perú) · cifrado AES-256.
+          <p className="text-hint text-[10px] text-center pt-1 leading-relaxed">
+            Al continuar aceptas los Términos y la Política de Privacidad.
+            <br />
+            <span className="inline-flex items-center gap-1 mt-0.5">
+              <ShieldCheck size={11} className="text-brand-teal" />
+              Ley N° 29733 (Perú) · cifrado AES-256
+            </span>
           </p>
         </div>
       )}

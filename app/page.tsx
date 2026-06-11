@@ -4,6 +4,7 @@ import { PhoneFrame } from "@/components/PhoneFrame";
 import { TabBar } from "@/components/TabBar";
 import { LoginScreen } from "@/screens/LoginScreen";
 import { WelcomeScreen } from "@/screens/WelcomeScreen";
+import { SplashScreen } from "@/screens/SplashScreen";
 import { CreateTwinCameraScreen } from "@/screens/CreateTwinCameraScreen";
 import { CustomizeTwinScreen } from "@/screens/CustomizeTwinScreen";
 import { PairDeviceScreen } from "@/screens/PairDeviceScreen";
@@ -71,6 +72,9 @@ export default function Page() {
         )}
         {screen === "welcome" && (
           <WelcomeScreen onNav={setScreen} appearance={appearance} useImage={useImage} />
+        )}
+        {screen === "splash" && (
+          <SplashScreen onNav={setScreen} appearance={appearance} />
         )}
         {screen === "createTwin" && (
           <CreateTwinCameraScreen onNav={setScreen} setUserPhoto={setUserPhoto} />

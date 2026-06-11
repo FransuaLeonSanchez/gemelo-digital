@@ -58,7 +58,7 @@ export function Sparkline({
             width="60"
             height="18"
             rx="8"
-            fill="#1C2230"
+            fill="#1A2336"
             stroke={color}
             strokeOpacity="0.35"
           />
@@ -76,10 +76,10 @@ export function Sparkline({
       )}
       {showAxis && (
         <g>
-          <text x={pad} y={height - 0} fontSize="9" fill="#5C6678">
+          <text x={pad} y={height - 0} fontSize="9" fill="#5D6883">
             00:00
           </text>
-          <text x={width - pad} y={height - 0} fontSize="9" fill="#5C6678" textAnchor="end">
+          <text x={width - pad} y={height - 0} fontSize="9" fill="#5D6883" textAnchor="end">
             24:00
           </text>
         </g>

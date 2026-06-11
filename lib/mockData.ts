@@ -52,23 +52,23 @@ export const pairingCatalog = [
     type: "smartwatch" as const,
     name: "Huawei Watch Fit 4",
     description: "HRV, frecuencia, pasos, sueño y presión arterial.",
-    color: "#4DA3FF",
+    color: "#60A5FA",
     image: "/images/smartwach.webp",
   },
   {
     type: "cgm" as const,
     name: "FreeStyle Libre 3",
     description: "Glucosa cada 5 min, sin pinchazo continuo.",
-    color: "#1FD0A3",
+    color: "#2DD4BF",
   },
 ];
 
 export const subIndices: SubIndex[] = [
-  { key: "Glucosa",   weight: 35, value: 58, icon: "droplet",  color: "#4DA3FF" },
-  { key: "Actividad", weight: 20, value: 71, icon: "activity", color: "#37D67A" },
+  { key: "Glucosa",   weight: 35, value: 58, icon: "droplet",  color: "#38BDF8" },
+  { key: "Actividad", weight: 20, value: 71, icon: "activity", color: "#4ADE80" },
   { key: "Sueño",     weight: 20, value: 49, icon: "moon",     color: "#A78BFA" },
-  { key: "Estrés",    weight: 15, value: 66, icon: "heart",    color: "#FF5E6C" },
-  { key: "Nutrición", weight: 10, value: 54, icon: "leaf",     color: "#1FD0A3" },
+  { key: "Estrés",    weight: 15, value: 66, icon: "heart",    color: "#FB7185" },
+  { key: "Nutrición", weight: 10, value: 54, icon: "leaf",     color: "#2DD4BF" },
 ];
 
 // Note: higher sub-index value = more burden on that dimension.
@@ -96,14 +96,14 @@ export const weekICM = [
 export const recommendations: Recommendation[] = [
   {
     tag: "Nutrición",
-    color: "#1FD0A3",
+    color: "#2DD4BF",
     title: "Cambia el arroz por quinua en el almuerzo",
     reason:
       "Tu pico de glucosa de hoy llegó a 162 mg/dL tras el almuerzo. La quinua tiene menor carga glucémica.",
   },
   {
     tag: "Actividad",
-    color: "#37D67A",
+    color: "#4ADE80",
     title: "Camina 20 min después de cenar",
     reason:
       "Llevas 3 días bajo tu meta de 7,000 pasos. Caminar tras comer baja el pico postprandial.",
@@ -120,7 +120,7 @@ export const recommendations: Recommendation[] = [
 export const alerts: AlertItem[] = [
   {
     icon: "alert-triangle",
-    color: "#FF5E6C",
+    color: "#FB7185",
     title: "Pico de glucosa detectado",
     body: "Llegaste a 162 mg/dL tras el almuerzo (14:00).",
     time: "Hace 2 h",
@@ -134,7 +134,7 @@ export const alerts: AlertItem[] = [
   },
   {
     icon: "sparkles",
-    color: "#1FD0A3",
+    color: "#2DD4BF",
     title: "Nueva recomendación",
     body: "Cambia el arroz por quinua en el almuerzo.",
     time: "Hoy 7:00",
@@ -164,10 +164,10 @@ export const devices = [
 ];
 
 export const weekMetrics = [
-  { label: "Tiempo en rango", value: "68%", sub: "meta 70%", color: "#4DA3FF" },
-  { label: "Pasos / día",     value: "6,420", sub: "meta 7,000", color: "#37D67A" },
+  { label: "Tiempo en rango", value: "68%", sub: "meta 70%", color: "#60A5FA" },
+  { label: "Pasos / día",     value: "6,420", sub: "meta 7,000", color: "#4ADE80" },
   { label: "Sueño promedio",  value: "6.1 h", sub: "meta 7 h",   color: "#A78BFA" },
-  { label: "Picos altos",     value: "9",     sub: "esta semana", color: "#FFB23E" },
+  { label: "Picos altos",     value: "9",     sub: "esta semana", color: "#FBBF24" },
 ];
 
 // Mini-historial por sub-índice (7 días)

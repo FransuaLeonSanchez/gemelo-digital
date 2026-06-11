@@ -11,13 +11,21 @@ interface Props {
 
 export function Card({ children, className = "", onClick, accent, inner }: Props) {
   const base = inner ? "bg-card2" : "bg-card";
-  const interactive = onClick ? "active:scale-[0.99] cursor-pointer transition-transform" : "";
+  const interactive = onClick
+    ? "active:scale-[0.985] cursor-pointer transition-transform"
+    : "";
   return (
     <div
       onClick={onClick}
-      className={`${base} border border-line rounded-2xl p-4 ${interactive} ${className}`}
-      style={accent ? { borderLeft: `3px solid ${accent}` } : undefined}
+      className={`relative ${base} border border-white/[0.06] rounded-[20px] p-4 shadow-card ${interactive} ${className}`}
     >
+      {accent && (
+        <span
+          aria-hidden
+          className="absolute left-0 top-4 bottom-4 w-[3px] rounded-r-full"
+          style={{ background: accent, boxShadow: `0 0 10px ${accent}55` }}
+        />
+      )}
       {children}
     </div>
   );

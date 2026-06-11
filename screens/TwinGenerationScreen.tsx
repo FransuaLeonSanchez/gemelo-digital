@@ -18,9 +18,9 @@ const STEPS = [
 ];
 
 const STATE_META = {
-  happy:   { label: "Saludable",  color: "#1FD0A3" },
-  neutral: { label: "Regular",    color: "#FFB23E" },
-  tired:   { label: "En riesgo",  color: "#FF5E6C" },
+  happy:   { label: "Saludable",  color: "#2DD4BF" },
+  neutral: { label: "Regular",    color: "#FBBF24" },
+  tired:   { label: "En riesgo",  color: "#FB7185" },
 };
 
 export function TwinGenerationScreen({ onNav, onComplete }: Props) {
@@ -87,12 +87,12 @@ export function TwinGenerationScreen({ onNav, onComplete }: Props) {
                   className="w-6 h-6 rounded-full flex items-center justify-center shrink-0"
                   style={{
                     backgroundColor: isDone
-                      ? "#1FD0A322"
+                      ? "#2DD4BF22"
                       : isActive
-                      ? "#4DA3FF22"
-                      : "#262D3D",
+                      ? "#60A5FA22"
+                      : "#222C42",
                     border: `1px solid ${
-                      isDone ? "#1FD0A3" : isActive ? "#4DA3FF" : "#262D3D"
+                      isDone ? "#2DD4BF" : isActive ? "#60A5FA" : "#222C42"
                     }`,
                   }}
                 >
@@ -119,9 +119,9 @@ export function TwinGenerationScreen({ onNav, onComplete }: Props) {
               return (
                 <div key={mood} className="flex flex-col items-center gap-1.5">
                   <div
-                    className="w-[82px] h-[82px] rounded-2xl overflow-hidden border-2 transition-all"
+                    className="w-[82px] h-[82px] rounded-[20px] overflow-hidden border-2 transition-all"
                     style={{
-                      borderColor: ready ? m.color : "#262D3D",
+                      borderColor: ready ? m.color : "#222C42",
                       opacity: ready ? 1 : 0.25,
                       boxShadow: ready ? `0 4px 16px ${m.color}44` : "none",
                       transition: "all 0.5s ease",
@@ -140,7 +140,7 @@ export function TwinGenerationScreen({ onNav, onComplete }: Props) {
                   </div>
                   <span
                     className="text-[10px] font-extrabold"
-                    style={{ color: ready ? m.color : "#5C6678" }}
+                    style={{ color: ready ? m.color : "#5D6883" }}
                   >
                     {m.label}
                   </span>

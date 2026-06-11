@@ -1,9 +1,33 @@
 {
   "clasificador_riesgo": {
     "algoritmo": "RandomForestClassifier(n_estimators=200)",
+    "n_train": 4800,
+    "n_test": 1200,
     "accuracy_test": 0.885,
     "cv5_mean": 0.8753,
     "cv5_std": 0.009,
+    "f1_por_clase": {
+      "bajo": 0.902,
+      "moderado": 0.852,
+      "alto": 0.913
+    },
+    "matriz_confusion": [
+      [
+        413,
+        42,
+        0
+      ],
+      [
+        48,
+        396,
+        29
+      ],
+      [
+        0,
+        19,
+        253
+      ]
+    ],
     "meta_guia": "> 0.85",
     "cumple_meta": true,
     "features": [
@@ -29,6 +53,8 @@
   },
   "predictor_pico": {
     "algoritmo": "GradientBoostingRegressor(n_estimators=400)",
+    "n_train": 7200,
+    "n_test": 1800,
     "mae_test_mgdl": 6.33,
     "r2_test": 0.9136,
     "meta_guia": "< 15 mg/dL",
@@ -47,5 +73,10 @@
       "sin_caminar": 164.0,
       "caminando_25min": 149.0
     }
+  },
+  "entorno": {
+    "sklearn": "1.9.0",
+    "seed_datos": 42,
+    "seed_split": 7
   }
 }

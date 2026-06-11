@@ -49,20 +49,20 @@ export function TwinScreen({ onNav, appearance, useImage = false, icmBase = icmT
     delta < 0
       ? {
           icon: <TrendingDown size={16} />,
-          color: "#1FD0A3",
+          color: "#2DD4BF",
           title: "Mejor escenario",
           text: `Si cumples este plan, tu riesgo bajaría ${Math.abs(delta)} puntos hoy.`,
         }
       : delta > 0
       ? {
           icon: <TrendingUp size={16} />,
-          color: "#FF5E6C",
+          color: "#FB7185",
           title: "Peor escenario",
           text: `Cuidado: este escenario subiría tu riesgo ${delta} puntos.`,
         }
       : {
           icon: <Minus size={16} />,
-          color: "#FFB23E",
+          color: "#FBBF24",
           title: "Sin cambios",
           text: "Este escenario mantiene tu riesgo igual.",
         };
@@ -70,26 +70,26 @@ export function TwinScreen({ onNav, appearance, useImage = false, icmBase = icmT
   return (
     <div className="h-full overflow-y-auto scroll-hide px-5 pt-3 pb-[110px]">
       <div className="flex items-center justify-between mb-2">
-        <h1 className="text-txt text-[20px] font-extrabold">Mi gemelo</h1>
+        <h1 className="text-txt text-[20px] font-extrabold tracking-tight">Mi gemelo</h1>
         <Pill color={ts.color}>{ts.label}</Pill>
       </div>
 
       <div
-        className="flex flex-col items-center justify-center rounded-3xl py-5 mb-4"
+        className="flex flex-col items-center justify-center rounded-[28px] py-6 mb-4 shadow-card"
         style={{
-          background: `radial-gradient(120% 90% at 50% 10%, ${ts.color}22, transparent 70%), linear-gradient(180deg, #161B27, #11151F)`,
-          border: "1px solid #262D3D",
+          background: `radial-gradient(120% 90% at 50% 0%, ${ts.color}26, transparent 65%), linear-gradient(180deg, #141C30, #0E1422)`,
+          border: "1px solid rgba(255,255,255,0.07)",
           transition: "background 500ms",
         }}
       >
         <TwinAvatar mood={ts.mood} size={180} appearance={appearance} useImage={useImage} />
         <div className="mt-3 text-center">
-          <p className="text-sub text-[10px] uppercase tracking-[0.2em] font-bold">
+          <p className="text-sub text-[10px] uppercase tracking-[0.22em] font-bold">
             ICM proyectado
           </p>
           <p
-            className="text-[34px] font-extrabold leading-none transition-colors"
-            style={{ color: ts.color }}
+            className="text-[38px] font-extrabold leading-none transition-colors tracking-tight tabular-nums"
+            style={{ color: ts.color, textShadow: `0 0 24px ${ts.color}55` }}
           >
             {projected}
           </p>
@@ -111,7 +111,7 @@ export function TwinScreen({ onNav, appearance, useImage = false, icmBase = icmT
 
         <div className="space-y-5">
           <SliderRow
-            color="#37D67A"
+            color="#4ADE80"
             contribution={breakdown.walk}
             sourceNote="Caminar tras comer baja el pico postprandial hasta 20 % (Reynolds 2016)."
           >
@@ -121,7 +121,7 @@ export function TwinScreen({ onNav, appearance, useImage = false, icmBase = icmT
               min={0}
               max={60}
               unit=" min"
-              color="#37D67A"
+              color="#4ADE80"
               onChange={setWalk}
             />
           </SliderRow>
@@ -144,7 +144,7 @@ export function TwinScreen({ onNav, appearance, useImage = false, icmBase = icmT
           </SliderRow>
 
           <SliderRow
-            color="#1FD0A3"
+            color="#2DD4BF"
             contribution={breakdown.carbs}
             sourceNote="A más carbohidratos en la cena, mayor glucosa en ayunas (Hall 2019)."
           >
@@ -154,7 +154,7 @@ export function TwinScreen({ onNav, appearance, useImage = false, icmBase = icmT
               min={20}
               max={80}
               unit=" %"
-              color="#1FD0A3"
+              color="#2DD4BF"
               onChange={setCarbs}
             />
           </SliderRow>
@@ -162,7 +162,7 @@ export function TwinScreen({ onNav, appearance, useImage = false, icmBase = icmT
       </Card>
 
       <div
-        className="mt-3 rounded-2xl p-4 flex items-start gap-3 border"
+        className="mt-3 rounded-[20px] p-4 flex items-start gap-3 border"
         style={{
           backgroundColor: `${message.color}14`,
           borderColor: `${message.color}55`,
@@ -198,7 +198,7 @@ export function TwinScreen({ onNav, appearance, useImage = false, icmBase = icmT
       {/* ICM info accordion */}
       <button
         onClick={() => setOpenInfo((o) => !o)}
-        className="mt-4 w-full bg-card border border-line rounded-2xl px-4 py-3 flex items-center justify-between active:scale-[0.99] transition"
+        className="mt-4 w-full bg-card border border-white/[0.08] rounded-[20px] px-4 py-3 flex items-center justify-between active:scale-[0.99] transition"
       >
         <span className="flex items-center gap-2 text-txt text-[13px] font-extrabold">
           <Info size={15} className="text-brand-blue" />
@@ -211,7 +211,7 @@ export function TwinScreen({ onNav, appearance, useImage = false, icmBase = icmT
       </button>
 
       {openInfo && (
-        <div className="mt-2 rounded-2xl border border-line bg-card2 p-4 text-[12.5px] text-sub leading-relaxed">
+        <div className="mt-2 rounded-[20px] border border-white/[0.08] bg-card2 p-4 text-[12.5px] text-sub leading-relaxed">
           <p>
             El <span className="text-txt font-extrabold">Índice de Carga
             Metabólica (ICM)</span> es un score{" "}
@@ -231,7 +231,7 @@ export function TwinScreen({ onNav, appearance, useImage = false, icmBase = icmT
             {subIndices.map((s) => (
               <li
                 key={s.key}
-                className="flex items-center justify-between bg-card border border-line rounded-xl px-3 py-1.5"
+                className="flex items-center justify-between bg-card border border-white/[0.08] rounded-xl px-3 py-1.5"
               >
                 <span className="text-txt text-[12px] font-bold">{s.key}</span>
                 <span className="font-extrabold text-[12px]" style={{ color: s.color }}>
@@ -243,9 +243,9 @@ export function TwinScreen({ onNav, appearance, useImage = false, icmBase = icmT
 
           <p className="mt-3 text-txt font-extrabold text-[12px]">Umbrales</p>
           <div className="flex gap-2 mt-1">
-            <Pill color="#1FD0A3">0–39 saludable</Pill>
-            <Pill color="#FFB23E">40–69 moderado</Pill>
-            <Pill color="#FF5E6C">70+ alto</Pill>
+            <Pill color="#2DD4BF">0–39 saludable</Pill>
+            <Pill color="#FBBF24">40–69 moderado</Pill>
+            <Pill color="#FB7185">70+ alto</Pill>
           </div>
           <p className="text-hint text-[11px] mt-3 leading-snug">
             En esta demo el ICM se calcula localmente. En el producto real, el
@@ -271,7 +271,7 @@ function SliderRow({
 }) {
   const isBetter = contribution < -0.05;
   const isWorse = contribution > 0.05;
-  const chipColor = isBetter ? "#1FD0A3" : isWorse ? "#FF5E6C" : "#8A95AC";
+  const chipColor = isBetter ? "#2DD4BF" : isWorse ? "#FB7185" : "#94A0B8";
 
   return (
     <div>

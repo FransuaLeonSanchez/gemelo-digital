@@ -20,9 +20,9 @@ export function TabBar({ active, onNav }: Props) {
   const right = items.slice(2);
 
   return (
-    <div className="absolute bottom-0 left-0 right-0 z-30">
-      <div className="relative h-[78px] bg-bg2/95 backdrop-blur-md border-t border-line">
-        <div className="absolute inset-0 grid grid-cols-5 items-center px-2">
+    <div className="absolute bottom-0 left-0 right-0 z-30 px-3 pb-3 pt-9 pointer-events-none bg-gradient-to-t from-bg via-bg/80 to-transparent">
+      <div className="relative pointer-events-auto h-[64px] rounded-[26px] bg-bg2/90 backdrop-blur-xl border border-white/[0.07] shadow-soft">
+        <div className="absolute inset-0 grid grid-cols-5 items-center px-1">
           {left.map((it) => (
             <TabItem key={it.id} it={it} active={active === it.id} onNav={onNav} />
           ))}
@@ -35,11 +35,15 @@ export function TabBar({ active, onNav }: Props) {
         {/* Center plate button */}
         <button
           onClick={() => onNav("log")}
-          className="absolute left-1/2 -translate-x-1/2 -top-6 w-14 h-14 rounded-full bg-brand-blue text-bg flex items-center justify-center active:scale-95 transition"
-          style={{ boxShadow: "0 10px 24px rgba(77,163,255,0.45), 0 0 0 6px #0B0E14" }}
+          className="absolute left-1/2 -translate-x-1/2 -top-[26px] w-[54px] h-[54px] rounded-full text-white flex items-center justify-center active:scale-95 transition"
+          style={{
+            background: "linear-gradient(135deg, #3D7BF6 0%, #7C5CF6 100%)",
+            boxShadow:
+              "0 12px 26px -6px rgba(99,124,246,0.55), 0 0 0 5px #090D17, inset 0 1px 0 rgba(255,255,255,0.25)",
+          }}
           aria-label="Registrar comida"
         >
-          <UtensilsCrossed size={22} strokeWidth={2.6} />
+          <UtensilsCrossed size={21} strokeWidth={2.4} />
         </button>
       </div>
     </div>
@@ -59,12 +63,20 @@ function TabItem({
   return (
     <button
       onClick={() => onNav(it.id)}
-      className={`flex flex-col items-center gap-1 py-2 ${
-        active ? "text-brand-blue" : "text-sub"
-      }`}
+      className="flex flex-col items-center gap-[3px] py-1.5"
     >
-      <Icon size={20} strokeWidth={active ? 2.4 : 2} />
-      <span className={`text-[10px] ${active ? "font-extrabold" : "font-semibold"}`}>
+      <span
+        className={`flex items-center justify-center w-10 h-[26px] rounded-full transition-colors duration-200 ${
+          active ? "bg-brand-blue/15 text-brand-blue" : "text-sub"
+        }`}
+      >
+        <Icon size={18} strokeWidth={active ? 2.5 : 2} />
+      </span>
+      <span
+        className={`text-[9.5px] tracking-wide ${
+          active ? "text-brand-blue font-extrabold" : "text-sub font-semibold"
+        }`}
+      >
         {it.label}
       </span>
     </button>

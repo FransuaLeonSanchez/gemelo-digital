@@ -47,9 +47,9 @@ export interface TwinStateInfo {
 }
 
 export function twinState(icm: number): TwinStateInfo {
-  if (icm < 40) return { mood: "happy", color: "#1FD0A3", label: "Bajo riesgo" };
-  if (icm < 70) return { mood: "neutral", color: "#FFB23E", label: "Riesgo moderado" };
-  return { mood: "tired", color: "#FF5E6C", label: "Riesgo alto" };
+  if (icm < 40) return { mood: "happy", color: "#2DD4BF", label: "Bajo riesgo" };
+  if (icm < 70) return { mood: "neutral", color: "#FBBF24", label: "Riesgo moderado" };
+  return { mood: "tired", color: "#FB7185", label: "Riesgo alto" };
 }
 
 export interface ICMBreakdown {

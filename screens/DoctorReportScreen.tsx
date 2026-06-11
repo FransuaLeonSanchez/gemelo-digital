@@ -30,15 +30,15 @@ export function DoctorReportScreen({ onNav }: Props) {
     <div className="h-full overflow-y-auto scroll-hide px-5 pt-2 pb-[120px] relative">
       <TopBar title="Reporte médico" onBack={() => onNav("profile")} />
 
-      <div className="bg-[#F4F6FB] text-[#0B0E14] rounded-2xl p-4 shadow-soft">
-        <div className="flex items-center justify-between border-b border-[#D7DCE6] pb-2">
+      <div className="bg-[#F7F9FC] text-[#090D17] rounded-[20px] p-4 shadow-soft">
+        <div className="flex items-center justify-between border-b border-[#E2E8F2] pb-2">
           <div>
-            <p className="text-[10px] uppercase tracking-wider text-[#5C6678] font-bold">
+            <p className="text-[10px] uppercase tracking-wider text-[#5D6883] font-bold">
               Reporte metabólico
             </p>
             <p className="text-[16px] font-extrabold">Gemelo Digital · Resumen semanal</p>
           </div>
-          <div className="w-10 h-10 rounded-xl bg-[#4DA3FF22] text-[#1859B6] flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-[#2563EB1A] text-[#2563EB] flex items-center justify-center">
             <FileCheck2 size={18} />
           </div>
         </div>
@@ -53,35 +53,35 @@ export function DoctorReportScreen({ onNav }: Props) {
         </div>
 
         <div className="grid grid-cols-2 gap-2 mt-3">
-          <Tile label="ICM promedio" value={String(avgICM)} sub="esta semana" color="#FFB23E" />
-          <Tile label="Tiempo en rango" value="68%" sub="meta 70%" color="#4DA3FF" />
-          <Tile label="Pasos / día" value="6,420" sub="meta 7,000" color="#37D67A" />
+          <Tile label="ICM promedio" value={String(avgICM)} sub="esta semana" color="#FBBF24" />
+          <Tile label="Tiempo en rango" value="68%" sub="meta 70%" color="#60A5FA" />
+          <Tile label="Pasos / día" value="6,420" sub="meta 7,000" color="#4ADE80" />
           <Tile label="Sueño promedio" value="6.1 h" sub="meta 7 h" color="#A78BFA" />
         </div>
 
         <div className="mt-3">
-          <p className="text-[10px] uppercase tracking-wider text-[#5C6678] font-bold mb-1">
+          <p className="text-[10px] uppercase tracking-wider text-[#5D6883] font-bold mb-1">
             Curva de glucosa (últimas 24 h)
           </p>
-          <div className="bg-white rounded-xl p-2 border border-[#D7DCE6]">
-            <Sparkline data={glucoseDay} color="#1859B6" highlightMaxLabel="162" showAxis={false} />
+          <div className="bg-white rounded-xl p-2 border border-[#E2E8F2]">
+            <Sparkline data={glucoseDay} color="#2563EB" highlightMaxLabel="162" showAxis={false} />
           </div>
         </div>
 
         {/* 5 criterios NCEP-ATP III */}
         <div className="mt-3">
-          <p className="text-[10px] uppercase tracking-wider text-[#5C6678] font-bold mb-1">
+          <p className="text-[10px] uppercase tracking-wider text-[#5D6883] font-bold mb-1">
             Criterios diagnósticos (NCEP-ATP III)
           </p>
-          <ul className="bg-white rounded-xl border border-[#D7DCE6] divide-y divide-[#E5E9F2]">
+          <ul className="bg-white rounded-xl border border-[#E2E8F2] divide-y divide-[#EDF1F8]">
             {mtsCriteria.map((c) => (
               <li key={c.key} className="flex items-center justify-between px-3 py-1.5">
                 <div>
-                  <p className="text-[11px] font-bold text-[#0B0E14]">{c.key}</p>
-                  <p className="text-[9px] text-[#5C6678]">{c.threshold}</p>
+                  <p className="text-[11px] font-bold text-[#090D17]">{c.key}</p>
+                  <p className="text-[9px] text-[#5D6883]">{c.threshold}</p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-[12px] font-extrabold text-[#0B0E14] tabular-nums">
+                  <span className="text-[12px] font-extrabold text-[#090D17] tabular-nums">
                     {c.value}
                   </span>
                   <span
@@ -97,9 +97,9 @@ export function DoctorReportScreen({ onNav }: Props) {
               </li>
             ))}
           </ul>
-          <p className="text-[10px] text-[#5C6678] mt-1.5 leading-snug">
+          <p className="text-[10px] text-[#5D6883] mt-1.5 leading-snug">
             {mtsCriteria.filter((c) => c.altered).length} de 5 alterados ·{" "}
-            <span className="font-bold text-[#0B0E14]">
+            <span className="font-bold text-[#090D17]">
               Pre-síndrome metabólico (riesgo creciente).
             </span>
           </p>
@@ -107,9 +107,9 @@ export function DoctorReportScreen({ onNav }: Props) {
 
         {/* Laboratorio + índices */}
         <div className="mt-3 grid grid-cols-3 gap-2">
-          <Tile label="HbA1c" value={`${mockUser.labs.hba1c}%`} sub="≥ 5.7 alerta" color="#FFB23E" />
+          <Tile label="HbA1c" value={`${mockUser.labs.hba1c}%`} sub="≥ 5.7 alerta" color="#FBBF24" />
           <Tile label="TyG" value={mockUser.labs.tyg.toFixed(2)} sub="proxy insulina" color="#A78BFA" />
-          <Tile label="HRV" value={`${mockUser.labs.hrv} ms`} sub="estrés alto" color="#FF5E6C" />
+          <Tile label="HRV" value={`${mockUser.labs.hrv} ms`} sub="estrés alto" color="#FB7185" />
         </div>
 
         <div className="mt-3 grid grid-cols-2 gap-2">
@@ -125,7 +125,7 @@ export function DoctorReportScreen({ onNav }: Props) {
           </div>
         </div>
 
-        <div className="mt-3 pt-3 border-t border-[#D7DCE6] flex items-center justify-between text-[10px] text-[#5C6678]">
+        <div className="mt-3 pt-3 border-t border-[#E2E8F2] flex items-center justify-between text-[10px] text-[#5D6883]">
           <span>Generado por Gemelo Digital Metabólico</span>
           <span className="font-bold">{today}</span>
         </div>
@@ -156,8 +156,8 @@ export function DoctorReportScreen({ onNav }: Props) {
 function Field({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <p className="text-[10px] uppercase tracking-wider text-[#5C6678] font-bold">{label}</p>
-      <p className="text-[#0B0E14] font-bold">{value}</p>
+      <p className="text-[10px] uppercase tracking-wider text-[#5D6883] font-bold">{label}</p>
+      <p className="text-[#090D17] font-bold">{value}</p>
     </div>
   );
 }
@@ -178,11 +178,11 @@ function Tile({
       className="rounded-xl p-2 border"
       style={{ backgroundColor: `${color}1A`, borderColor: `${color}55` }}
     >
-      <p className="text-[10px] uppercase font-bold text-[#5C6678]">{label}</p>
+      <p className="text-[10px] uppercase font-bold text-[#5D6883]">{label}</p>
       <p className="text-[16px] font-extrabold" style={{ color }}>
         {value}
       </p>
-      <p className="text-[10px] text-[#5C6678]">{sub}</p>
+      <p className="text-[10px] text-[#5D6883]">{sub}</p>
     </div>
   );
 }

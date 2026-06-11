@@ -5,7 +5,7 @@ Modelo 1 — Clasificador de riesgo metabólico (Random Forest)
     Meta de la guía técnica: accuracy > 85 %.
 
 Modelo 2 — Predictor del pico glucémico postprandial (Gradient Boosting)
-    7 features del evento de comida → pico de glucosa a 60 min (mg/dL)
+    8 features del evento de comida → pico de glucosa a 60 min (mg/dL)
     Meta de la guía técnica: MAE < 15 mg/dL (clínicamente aceptable).
     Mismo enfoque del paper Zeevi et al. 2015 (Cell) para PPGR; en producción
     se reemplaza por el LSTM descrito en la guía cuando haya series CGM reales.
@@ -22,11 +22,13 @@ import json
 from pathlib import Path
 
 import joblib
+import sklearn
 from sklearn.ensemble import GradientBoostingRegressor, RandomForestClassifier
 from sklearn.metrics import (
     accuracy_score,
     classification_report,
     confusion_matrix,
+    f1_score,
     mean_absolute_error,
     r2_score,
 )
@@ -92,11 +94,16 @@ print("\nImportancia de variables:")
 for f, imp in importancias:
     print(f"  {f:26s} {imp:.3f} {'█' * int(imp * 60)}")
 
+f1s = f1_score(yr_te, pred, labels=labels, average=None)
 metrics["clasificador_riesgo"] = {
     "algoritmo": "RandomForestClassifier(n_estimators=200)",
+    "n_train": len(Xr_tr),
+    "n_test": len(Xr_te),
     "accuracy_test": round(acc, 4),
     "cv5_mean": round(cv5.mean(), 4),
     "cv5_std": round(cv5.std(), 4),
+    "f1_por_clase": {c: round(float(f), 3) for c, f in zip(labels, f1s)},
+    "matriz_confusion": confusion_matrix(yr_te, pred, labels=labels).tolist(),
     "meta_guia": "> 0.85",
     "cumple_meta": bool(acc > 0.85),
     "features": FEATURES_RIESGO,
@@ -147,6 +154,8 @@ print(f"  beneficio caminata: {pico - pico_camina:.0f} mg/dL menos")
 
 metrics["predictor_pico"] = {
     "algoritmo": "GradientBoostingRegressor(n_estimators=400)",
+    "n_train": len(Xc_tr),
+    "n_test": len(Xc_te),
     "mae_test_mgdl": round(float(mae), 2),
     "r2_test": round(float(r2), 4),
     "meta_guia": "< 15 mg/dL",
@@ -157,6 +166,7 @@ metrics["predictor_pico"] = {
         "caminando_25min": round(float(pico_camina), 0),
     },
 }
+metrics["entorno"] = {"sklearn": sklearn.__version__, "seed_datos": 42, "seed_split": 7}
 joblib.dump(gbm, OUT / "predictor_pico_gbm.joblib")
 
 with open(OUT / "metrics.json", "w") as f:

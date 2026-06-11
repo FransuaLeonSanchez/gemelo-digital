@@ -55,7 +55,7 @@ export function PairDeviceScreen({ onNav, onPaired, returnTo }: Props) {
       <div className="px-5 pt-2 pb-2 flex items-center justify-between">
         <button
           onClick={() => onNav(returnTo)}
-          className="w-9 h-9 rounded-full bg-card border border-line flex items-center justify-center active:scale-95"
+          className="w-9 h-9 rounded-full bg-card border border-white/[0.08] flex items-center justify-center active:scale-95"
           aria-label="Atrás"
         >
           <ChevronLeft size={18} className="text-txt" />
@@ -81,10 +81,10 @@ export function PairDeviceScreen({ onNav, onPaired, returnTo }: Props) {
                 width: i === stepIdx ? 22 : 8,
                 backgroundColor:
                   i < stepIdx
-                    ? "#1FD0A3"
+                    ? "#2DD4BF"
                     : i === stepIdx
-                    ? "#4DA3FF"
-                    : "#262D3D",
+                    ? "#60A5FA"
+                    : "#222C42",
               }}
             />
           ))}
@@ -253,10 +253,10 @@ function DeviceStep({
           <img
             src={image}
             alt={deviceName}
-            className="w-40 h-40 object-contain drop-shadow-[0_8px_24px_rgba(77,163,255,0.35)]"
+            className="w-40 h-40 object-contain drop-shadow-[0_8px_24px_rgba(96,165,250,0.35)]"
           />
         ) : (
-          <div className="relative w-32 h-32 rounded-2xl bg-gradient-to-br from-[#1A2030] to-[#0B0E14] border border-line flex items-center justify-center shadow-soft rotate-[-8deg]">
+          <div className="relative w-32 h-32 rounded-[20px] bg-gradient-to-br from-[#1A2030] to-[#090D17] border border-white/[0.08] flex items-center justify-center shadow-soft rotate-[-8deg]">
             <Watch size={56} className="text-txt" />
             <span className="absolute top-3 right-3 w-2 h-2 rounded-full bg-brand-red" />
             <span className="absolute bottom-3 left-3 text-[8px] font-extrabold text-brand-blue">
@@ -267,10 +267,10 @@ function DeviceStep({
       </div>
 
       <div className="mt-5 grid grid-cols-2 gap-2 w-full max-w-[300px] mx-auto">
-        <SpecChip icon={<Heart size={12} />} color="#FF5E6C" label="HRV" />
-        <SpecChip icon={<Activity size={12} />} color="#37D67A" label="Pasos" />
+        <SpecChip icon={<Heart size={12} />} color="#FB7185" label="HRV" />
+        <SpecChip icon={<Activity size={12} />} color="#4ADE80" label="Pasos" />
         <SpecChip icon={<Moon size={12} />} color="#A78BFA" label="Sueño" />
-        <SpecChip icon={<Droplet size={12} />} color="#4DA3FF" label="Presión" />
+        <SpecChip icon={<Droplet size={12} />} color="#60A5FA" label="Presión" />
       </div>
     </StepFrame>
   );
@@ -335,7 +335,7 @@ function NamingStep({
 
       <div className="mt-5 w-full max-w-[320px] mx-auto">
         <div
-          className="rounded-2xl bg-card border-2 px-4 py-3 flex items-center gap-3"
+          className="rounded-[20px] bg-card border-2 px-4 py-3 flex items-center gap-3"
           style={{ borderColor: `${color}55` }}
         >
           <Watch size={18} className="text-sub" />
@@ -385,10 +385,10 @@ function SuccessStep({
       </div>
 
       <div className="mt-5 grid grid-cols-2 gap-2 max-w-[320px] mx-auto text-left">
-        <DataPreview label="Frecuencia" value="74 bpm" color="#FF5E6C" />
+        <DataPreview label="Frecuencia" value="74 bpm" color="#FB7185" />
         <DataPreview label="HRV" value="42 ms" color="#A78BFA" />
-        <DataPreview label="Pasos hoy" value="4,820" color="#37D67A" />
-        <DataPreview label="Sueño anoche" value="5h 40m" color="#4DA3FF" />
+        <DataPreview label="Pasos hoy" value="4,820" color="#4ADE80" />
+        <DataPreview label="Sueño anoche" value="5h 40m" color="#60A5FA" />
       </div>
     </StepFrame>
   );
@@ -404,7 +404,7 @@ function DataPreview({
   color: string;
 }) {
   return (
-    <div className="rounded-xl bg-card2 border border-line px-3 py-2">
+    <div className="rounded-xl bg-card2 border border-white/[0.08] px-3 py-2">
       <p className="text-hint text-[10px] uppercase font-bold">{label}</p>
       <p className="text-[16px] font-extrabold" style={{ color }}>
         {value}

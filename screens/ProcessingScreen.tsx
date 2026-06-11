@@ -54,8 +54,8 @@ export function ProcessingScreen({ onNav, appearance, useImage = false }: Props)
               <span
                 className="w-6 h-6 rounded-full flex items-center justify-center"
                 style={{
-                  backgroundColor: done ? "#1FD0A322" : current ? "#4DA3FF22" : "#262D3D",
-                  border: `1px solid ${done ? "#1FD0A3" : current ? "#4DA3FF" : "#262D3D"}`,
+                  backgroundColor: done ? "#2DD4BF22" : current ? "#60A5FA22" : "#222C42",
+                  border: `1px solid ${done ? "#2DD4BF" : current ? "#60A5FA" : "#222C42"}`,
                 }}
               >
                 {done ? (

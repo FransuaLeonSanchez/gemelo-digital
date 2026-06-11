@@ -48,6 +48,15 @@ clave con free tier en <https://aistudio.google.com/apikey>, reemplázala en
 - Animaciones con CSS keyframes (sin librerías pesadas)
 - Toda la lógica y los datos viven en `lib/mockData.ts` y `lib/icm.ts`
 
+## Sistema de diseño
+
+- **Tipografía:** Plus Jakarta Sans (Google Fonts), números tabulares en métricas.
+- **Superficies (4 niveles):** `page #04060C` → `bg #090D17` → `card #131A2C` → `card2 #1A2336`, con bordes sutiles `white/6-8%` en lugar de líneas duras.
+- **Color primario:** azul `#60A5FA`, con gradiente de marca `#3D7BF6 → #7C5CF6` para CTAs, FAB y estados activos.
+- **Colores semánticos (riesgo):** verde-teal `#2DD4BF` (bajo) · ámbar `#FBBF24` (moderado) · rosa `#FB7185` (alto). Solo se usan con significado, no como decoración.
+- **Colores de datos:** glucosa `#38BDF8` · actividad `#4ADE80` · sueño `#A78BFA` · estrés `#FB7185` · nutrición `#2DD4BF` (definidos en `lib/mockData.ts`).
+- **Componentes:** botones pill (`rounded-full`) con gradiente y glow, tarjetas `rounded-[20px]` con sombra suave, TabBar flotante con blur y FAB central, marco de teléfono con dynamic island y glows ambientales.
+
 ## Cómo correrlo (local)
 
 ```bash

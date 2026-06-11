@@ -3,7 +3,7 @@ import { ReactNode } from "react";
 
 export function Pill({
   children,
-  color = "#4DA3FF",
+  color = "#60A5FA",
   className = "",
 }: {
   children: ReactNode;
@@ -12,11 +12,11 @@ export function Pill({
 }) {
   return (
     <span
-      className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold ${className}`}
+      className={`inline-flex items-center gap-1 px-2.5 py-[3px] rounded-full text-[10.5px] font-bold tracking-wide ${className}`}
       style={{
-        backgroundColor: `${color}1f`,
+        backgroundColor: `${color}1A`,
         color,
-        border: `1px solid ${color}33`,
+        border: `1px solid ${color}30`,
       }}
     >
       {children}

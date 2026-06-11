@@ -139,10 +139,16 @@ ARCHIVOS DE ESTA CARPETA:
   datos_sinteticos.py           generador de poblacion sintetica documentado
   entrenar_modelo.py            entrenamiento + metricas + guardado
   predecir.py                   demo de inferencia con los modelos guardados
+  generar_graficos.py           graficos de evaluacion (matriz de confusion,
+                                importancias, predicho vs real, what-if)
+  generar_slides.py             presentacion del modelo (HTML + PPTX)
   requirements.txt              dependencias (scikit-learn, pandas, joblib)
   modelos/clasificador_riesgo_rf.joblib   Modelo 1 entrenado
   modelos/predictor_pico_gbm.joblib       Modelo 2 entrenado
   modelos/metrics.json                    metricas de la ultima corrida
+  presentacion/slides.html                deck de 4 slides (auto-contenido)
+  presentacion/GEMA_modelo_ML.pptx        misma presentacion en PowerPoint
+  presentacion/img/                       graficos PNG de evaluacion
   DESCRIPCION_MODELO.txt        este archivo
 
 7. REFERENCIAS CIENTIFICAS

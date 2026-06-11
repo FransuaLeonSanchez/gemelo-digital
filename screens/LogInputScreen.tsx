@@ -38,10 +38,10 @@ const SLOTS: {
   hint: string;
   color: string;
 }[] = [
-  { type: "Desayuno", icon: Coffee, hint: "07:00–09:00", color: "#FFB23E" },
-  { type: "Almuerzo", icon: Soup,   hint: "12:30–14:00", color: "#4DA3FF" },
+  { type: "Desayuno", icon: Coffee, hint: "07:00–09:00", color: "#FBBF24" },
+  { type: "Almuerzo", icon: Soup,   hint: "12:30–14:00", color: "#38BDF8" },
   { type: "Cena",     icon: Moon,   hint: "19:00–21:00", color: "#A78BFA" },
-  { type: "Snack",    icon: Apple,  hint: "opcional",    color: "#37D67A" },
+  { type: "Snack",    icon: Apple,  hint: "opcional",    color: "#4ADE80" },
 ];
 
 const MOCK_DETECTION: Record<MealType, Omit<Meal, "type" | "time" | "photo">> = {
@@ -52,9 +52,9 @@ const MOCK_DETECTION: Record<MealType, Omit<Meal, "type" | "time" | "photo">> = 
 };
 
 const LOAD_COLOR: Record<GlucemicLoad, string> = {
-  Baja: "#1FD0A3",
-  Media: "#FFB23E",
-  Alta: "#FF5E6C",
+  Baja: "#2DD4BF",
+  Media: "#FBBF24",
+  Alta: "#FB7185",
 };
 
 const loadIdx = (l: GlucemicLoad) => (l === "Baja" ? 0 : l === "Media" ? 1 : 2);
@@ -247,7 +247,7 @@ export function LogInputScreen({ onNav, meals, setMeals }: Props) {
         <div className="flex items-center justify-between py-2">
           <button
             onClick={closeCapture}
-            className="w-9 h-9 rounded-full bg-card border border-line flex items-center justify-center active:scale-95"
+            className="w-9 h-9 rounded-full bg-card border border-white/[0.08] flex items-center justify-center active:scale-95"
             aria-label="Cerrar"
           >
             <X size={16} className="text-txt" />
@@ -276,7 +276,7 @@ export function LogInputScreen({ onNav, meals, setMeals }: Props) {
             <div className="space-y-3">
               <OptionCard
                 icon={<Camera size={20} />}
-                color="#4DA3FF"
+                color="#60A5FA"
                 title="Tomar una foto"
                 body="Usa la cámara para detectar tu plato."
                 onClick={enableCamera}
@@ -284,7 +284,7 @@ export function LogInputScreen({ onNav, meals, setMeals }: Props) {
               />
               <OptionCard
                 icon={<ImagePlus size={20} />}
-                color="#1FD0A3"
+                color="#2DD4BF"
                 title="Cargar una imagen"
                 body="Sube una foto desde tu galería."
                 onClick={() => fileRef.current?.click()}
@@ -292,7 +292,7 @@ export function LogInputScreen({ onNav, meals, setMeals }: Props) {
             </div>
 
             <div className="mt-auto pt-4">
-              <div className="rounded-2xl bg-card2 border border-line p-3 flex items-start gap-2.5">
+              <div className="rounded-[20px] bg-card2 border border-white/[0.08] p-3 flex items-start gap-2.5">
                 <Sparkles size={16} className="text-brand-blue shrink-0 mt-0.5" />
                 <p className="text-sub text-[11.5px] leading-snug">
                   Tu gemelo predice cómo este plato afectará tu glucosa en los
@@ -305,7 +305,7 @@ export function LogInputScreen({ onNav, meals, setMeals }: Props) {
 
         {(stage === "camera" || stage === "analyzing" || stage === "detected") && (
           <>
-            <div className="relative aspect-square w-full rounded-3xl overflow-hidden bg-card2 border border-line">
+            <div className="relative aspect-square w-full rounded-3xl overflow-hidden bg-card2 border border-white/[0.08]">
               <video
                 ref={videoRef}
                 playsInline
@@ -325,7 +325,7 @@ export function LogInputScreen({ onNav, meals, setMeals }: Props) {
               )}
               {stage === "analyzing" && (
                 <div className="absolute inset-0 bg-black/55 flex items-center justify-center">
-                  <div className="bg-card border border-line rounded-2xl px-4 py-2 flex items-center gap-2 shadow-soft">
+                  <div className="bg-card border border-white/[0.08] rounded-[20px] px-4 py-2 flex items-center gap-2 shadow-soft">
                     <Loader2 size={14} className="text-brand-blue animate-spin" />
                     <span className="text-txt text-[12px] font-bold">Analizando el plato…</span>
                   </div>
@@ -350,7 +350,7 @@ export function LogInputScreen({ onNav, meals, setMeals }: Props) {
               <>
                 <Card className="mt-3">
                   <div className="flex items-center justify-between mb-2">
-                    <Pill color={detected.source === "gemini" ? "#A78BFA" : "#4DA3FF"}>
+                    <Pill color={detected.source === "gemini" ? "#A78BFA" : "#60A5FA"}>
                       <Sparkles size={10} />{" "}
                       {detected.source === "gemini"
                         ? "Analizado con Gemini"
@@ -363,8 +363,8 @@ export function LogInputScreen({ onNav, meals, setMeals }: Props) {
                   <p className="text-txt text-[15px] font-extrabold">{detected.name}</p>
                   <div className="grid grid-cols-3 gap-2 mt-3">
                     <Stat label="Carga" value={detected.load} color={LOAD_COLOR[detected.load]} />
-                    <Stat label="Carbos" value={`${detected.carbs} g`} color="#1FD0A3" />
-                    <Stat label="Energía" value={`${detected.kcal} kcal`} color="#4DA3FF" />
+                    <Stat label="Carbos" value={`${detected.carbs} g`} color="#2DD4BF" />
+                    <Stat label="Energía" value={`${detected.kcal} kcal`} color="#60A5FA" />
                   </div>
                   <div className="mt-3 rounded-xl border border-brand-amber/40 bg-brand-amber/10 p-3 flex items-start gap-2">
                     <Sparkles size={14} className="text-brand-amber mt-0.5" />
@@ -396,8 +396,8 @@ export function LogInputScreen({ onNav, meals, setMeals }: Props) {
         )}
 
         {stage === "denied" && (
-          <div className="rounded-3xl bg-card2 border border-line p-6 flex flex-col items-center text-center gap-3">
-            <div className="w-14 h-14 rounded-2xl bg-brand-red/15 text-brand-red flex items-center justify-center">
+          <div className="rounded-3xl bg-card2 border border-white/[0.08] p-6 flex flex-col items-center text-center gap-3">
+            <div className="w-14 h-14 rounded-[20px] bg-brand-red/15 text-brand-red flex items-center justify-center">
               <AlertTriangle size={26} />
             </div>
             <div>
@@ -422,7 +422,7 @@ export function LogInputScreen({ onNav, meals, setMeals }: Props) {
       <div className="flex items-center justify-between py-1">
         <button
           onClick={() => onNav("home")}
-          className="w-9 h-9 rounded-full bg-card border border-line flex items-center justify-center active:scale-95"
+          className="w-9 h-9 rounded-full bg-card border border-white/[0.08] flex items-center justify-center active:scale-95"
         >
           <X size={16} className="text-txt" />
         </button>
@@ -445,21 +445,21 @@ export function LogInputScreen({ onNav, meals, setMeals }: Props) {
         <div className="grid grid-cols-3 gap-2">
           <DayStat
             icon={<Flame size={14} />}
-            color="#FF5E6C"
+            color="#FB7185"
             value={`${totalKcal}`}
             unit="kcal"
             label="energía"
           />
           <DayStat
             icon={<Zap size={14} />}
-            color="#1FD0A3"
+            color="#2DD4BF"
             value={`${totalCarbs}`}
             unit="g"
             label="carbos"
           />
           <DayStat
             icon={<UtensilsCrossed size={14} />}
-            color="#4DA3FF"
+            color="#60A5FA"
             value={`${completed}/3`}
             unit=""
             label="principales"
@@ -469,7 +469,7 @@ export function LogInputScreen({ onNav, meals, setMeals }: Props) {
         <p className="text-sub text-[11px] uppercase tracking-wider font-bold mt-3 mb-1">
           Glucosa estimada del día
         </p>
-        <Sparkline data={glucoseDay} color="#4DA3FF" height={70} showAxis={false} />
+        <Sparkline data={glucoseDay} color="#38BDF8" height={70} showAxis={false} />
         <p className="text-hint text-[10.5px] leading-snug mt-1">
           La curva se ajusta a medida que registras cada comida. Tu gemelo
           recalcula el ICM y las recomendaciones.
@@ -485,11 +485,11 @@ export function LogInputScreen({ onNav, meals, setMeals }: Props) {
             <button
               key={s.type}
               onClick={() => openSlot(s.type)}
-              className="w-full text-left bg-card border border-line rounded-2xl p-3 active:scale-[0.99] transition"
-              style={{ borderLeft: `3px solid ${meal ? s.color : "#262D3D"}` }}
+              className="w-full text-left bg-card border border-white/[0.08] rounded-[20px] p-3 active:scale-[0.99] transition"
+              style={{ borderLeft: `3px solid ${meal ? s.color : "#222C42"}` }}
             >
               <div className="flex items-center gap-3">
-                <div className="relative w-14 h-14 rounded-2xl overflow-hidden bg-card2 border border-line flex items-center justify-center shrink-0">
+                <div className="relative w-14 h-14 rounded-[20px] overflow-hidden bg-card2 border border-white/[0.08] flex items-center justify-center shrink-0">
                   {meal?.photo ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={meal.photo} alt={meal.name} className="w-full h-full object-cover" />
@@ -499,7 +499,7 @@ export function LogInputScreen({ onNav, meals, setMeals }: Props) {
                   {meal && (
                     <span
                       className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-brand-teal text-bg flex items-center justify-center"
-                      style={{ boxShadow: "0 0 0 2px #161B27" }}
+                      style={{ boxShadow: "0 0 0 2px #131A2C" }}
                     >
                       <Check size={11} strokeWidth={3} />
                     </span>
@@ -584,7 +584,7 @@ function OptionCard({
   return (
     <button
       onClick={onClick}
-      className="w-full bg-card border border-line rounded-2xl p-4 flex items-start gap-3 active:scale-[0.99] transition text-left"
+      className="w-full bg-card border border-white/[0.08] rounded-[20px] p-4 flex items-start gap-3 active:scale-[0.99] transition text-left"
       style={{ borderLeft: `3px solid ${color}` }}
     >
       <div
@@ -613,7 +613,7 @@ function OptionCard({
 
 function Stat({ label, value, color }: { label: string; value: string; color: string }) {
   return (
-    <div className="bg-card2 border border-line rounded-xl p-2 text-center">
+    <div className="bg-card2 border border-white/[0.08] rounded-xl p-2 text-center">
       <p className="text-hint text-[10px] uppercase font-bold">{label}</p>
       <p className="text-[14px] font-extrabold" style={{ color }}>
         {value}
@@ -636,7 +636,7 @@ function DayStat({
   label: string;
 }) {
   return (
-    <div className="rounded-xl bg-card2 border border-line px-2.5 py-2">
+    <div className="rounded-xl bg-card2 border border-white/[0.08] px-2.5 py-2">
       <div className="flex items-center gap-1 text-hint text-[10px] uppercase font-bold">
         <span style={{ color }}>{icon}</span>
         <span>{label}</span>

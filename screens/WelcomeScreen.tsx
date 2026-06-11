@@ -28,39 +28,39 @@ const SLIDES: Slide[] = [
     title: "Una cadena silenciosa",
     body: "El síndrome metabólico avanza sin síntomas. Cuando se detecta, el daño ya es difícil de revertir.",
     bullets: [
-      { value: `${peruStats.notHealthy}%`, label: "de adultos peruanos es metabólicamente no saludable", color: "#FF5E6C" },
-      { value: `${peruStats.oneAlteration}%`, label: "tiene al menos 1 alteración metabólica", color: "#FFB23E" },
+      { value: `${peruStats.notHealthy}%`, label: "de adultos peruanos es metabólicamente no saludable", color: "#FB7185" },
+      { value: `${peruStats.oneAlteration}%`, label: "tiene al menos 1 alteración metabólica", color: "#FBBF24" },
       { value: `${peruStats.normalWeightAtRisk}%`, label: "con peso normal ya está en riesgo", color: "#A78BFA" },
     ],
     twin: "tired",
     Icon: AlertOctagon,
-    iconColor: "#FF5E6C",
+    iconColor: "#FB7185",
   },
   {
     badge: "La solución",
     title: "Tu gemelo digital",
     body: "Un modelo único que aprende de tu glucosa, sueño, estrés y nutrición para predecir tu riesgo en tiempo real.",
     bullets: [
-      { value: "5", label: "sub-índices vigilan tu metabolismo", color: "#4DA3FF" },
-      { value: "ICM", label: "tu Índice de Carga Metabólica de 0 a 100", color: "#1FD0A3" },
-      { value: "What-if", label: "simula cómo cambia tu riesgo con cada hábito", color: "#37D67A" },
+      { value: "5", label: "sub-índices vigilan tu metabolismo", color: "#60A5FA" },
+      { value: "ICM", label: "tu Índice de Carga Metabólica de 0 a 100", color: "#2DD4BF" },
+      { value: "What-if", label: "simula cómo cambia tu riesgo con cada hábito", color: "#4ADE80" },
     ],
     twin: "neutral",
     Icon: Brain,
-    iconColor: "#4DA3FF",
+    iconColor: "#60A5FA",
   },
   {
     badge: "Resultados reales",
     title: "Prevenir es posible",
     body: "Los gemelos digitales metabólicos están cambiando la historia de la diabetes en el mundo.",
     bullets: [
-      { value: `${peruStats.twinHealthRemission}%`, label: "de remisión de diabetes tipo 2 en 1 año (Twin Health · Cleveland Clinic)", color: "#1FD0A3" },
-      { value: "< 15 mg/dL", label: "de error en la predicción glucémica", color: "#4DA3FF" },
-      { value: "Lima", label: "primer gemelo digital adaptado al contexto peruano", color: "#FFB23E" },
+      { value: `${peruStats.twinHealthRemission}%`, label: "de remisión de diabetes tipo 2 en 1 año (Twin Health · Cleveland Clinic)", color: "#2DD4BF" },
+      { value: "< 15 mg/dL", label: "de error en la predicción glucémica", color: "#60A5FA" },
+      { value: "Lima", label: "primer gemelo digital adaptado al contexto peruano", color: "#FBBF24" },
     ],
     twin: "happy",
     Icon: Sparkles,
-    iconColor: "#1FD0A3",
+    iconColor: "#2DD4BF",
   },
 ];
 
@@ -80,7 +80,7 @@ export function WelcomeScreen({ onNav, appearance, useImage = false }: Props) {
               className="h-1.5 rounded-full transition-all"
               style={{
                 width: k === i ? 22 : 8,
-                backgroundColor: k === i ? "#4DA3FF" : "#262D3D",
+                backgroundColor: k === i ? "#60A5FA" : "#222C42",
               }}
             />
           ))}
@@ -100,7 +100,7 @@ export function WelcomeScreen({ onNav, appearance, useImage = false }: Props) {
             className="absolute -right-1 -bottom-1 w-10 h-10 rounded-full flex items-center justify-center"
             style={{
               backgroundColor: slide.iconColor,
-              color: "#0B0E14",
+              color: "#090D17",
               boxShadow: `0 8px 18px ${slide.iconColor}55`,
             }}
           >
@@ -125,7 +125,7 @@ export function WelcomeScreen({ onNav, appearance, useImage = false }: Props) {
           {slide.bullets.map((b) => (
             <li
               key={b.label}
-              className="flex items-center gap-3 bg-card border border-line rounded-2xl px-3 py-2.5"
+              className="flex items-center gap-3 bg-card border border-white/[0.08] rounded-[20px] px-3 py-2.5"
             >
               <span
                 className="min-w-[58px] text-[15px] font-extrabold text-right tabular-nums"
