@@ -9,8 +9,11 @@ import { NextRequest, NextResponse } from "next/server";
  * clave inválida), responde { ok: false } y el cliente usa su estimación local.
  */
 
-const GEMINI_URL =
-  "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
+// gemini-2.5-flash es el modelo con cuota activa en el proyecto actual;
+// si falla se intenta 2.5-flash-lite (más barato) antes de caer al mock local.
+const GEMINI_MODELS = ["gemini-2.5-flash", "gemini-2.5-flash-lite"];
+const geminiUrl = (model: string) =>
+  `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
 
 const PROMPT = `Eres el motor de análisis nutricional de GEMA, una app peruana de
 prevención del síndrome metabólico. Analiza la foto de este plato de comida.
@@ -45,45 +48,52 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 15000);
+    let data: any = null;
+    let lastStatus = 0;
 
-    const res = await fetch(GEMINI_URL, {
-      method: "POST",
-      signal: controller.signal,
-      headers: {
-        "x-goog-api-key": apiKey,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        contents: [
-          {
-            parts: [
-              { text: PROMPT },
-              {
-                inline_data: {
-                  mime_type: body.mimeType || "image/jpeg",
-                  data: body.imageBase64,
-                },
-              },
-            ],
-          },
-        ],
-        generationConfig: {
-          temperature: 0.2,
-          responseMimeType: "application/json",
+    for (const model of GEMINI_MODELS) {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 20000);
+      const res = await fetch(geminiUrl(model), {
+        method: "POST",
+        signal: controller.signal,
+        headers: {
+          "x-goog-api-key": apiKey,
+          "Content-Type": "application/json",
         },
-      }),
-    });
-    clearTimeout(timeout);
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                { text: PROMPT },
+                {
+                  inline_data: {
+                    mime_type: body.mimeType || "image/jpeg",
+                    data: body.imageBase64,
+                  },
+                },
+              ],
+            },
+          ],
+          generationConfig: {
+            temperature: 0.2,
+            responseMimeType: "application/json",
+          },
+        }),
+      }).finally(() => clearTimeout(timeout));
 
-    if (!res.ok) {
+      if (res.ok) {
+        data = await res.json();
+        break;
+      }
+      lastStatus = res.status;
       const err = await res.text();
-      console.error("Gemini error", res.status, err.slice(0, 300));
-      return NextResponse.json({ ok: false, reason: `gemini-${res.status}` });
+      console.error(`Gemini ${model} error`, res.status, err.slice(0, 200));
     }
 
-    const data = await res.json();
+    if (!data) {
+      return NextResponse.json({ ok: false, reason: `gemini-${lastStatus}` });
+    }
     const text: string | undefined =
       data?.candidates?.[0]?.content?.parts?.[0]?.text;
     if (!text) return NextResponse.json({ ok: false, reason: "empty" });

@@ -14,11 +14,26 @@ teléfono** en la web.
 | Funcionalidad | Estado |
 |---|---|
 | Cámara (selfie del gemelo y foto del plato) | **Real** (getUserMedia) |
-| Análisis del plato con IA | **Real** — Gemini 2.0 Flash vía `/api/analyze-meal`; fallback local si la API no responde |
+| Análisis del plato con IA | **Real** — Gemini 2.5 Flash vía `/api/analyze-meal` (verificado end-to-end); fallback local si la API no responde |
+| **Gemelo 3D desde tu selfie** | **Real** — Ready Player Me (iframe) genera el avatar GLB; three.js lo anima con morph targets ARKit según el estado (happy/neutral/tired) |
 | ICM recalculado al registrar comidas | **Real** (lógica local en `lib/icm.ts`) |
 | Simulador what-if | **Real** (modelo fisiológico local con fuentes) |
 | Modelo predictivo (Random Forest + GBM) | **Real y entrenado** — ver `modelo-predictivo/` |
 | Login Google, smartwatch BLE, sensor CGM | Simulados (mock visual) |
+
+## Gemelo 3D (Ready Player Me + three.js)
+
+- En **Crear mi gemelo → "Gemelo 3D realista (Beta)"** se abre el creador de
+  Ready Player Me embebido: selfie → avatar 3D en su CDN (GLB ~2 MB con
+  `quality=low&morphTargets=ARKit`).
+- [components/Twin/Twin3D.tsx](components/Twin/Twin3D.tsx) carga el GLB con
+  `@react-three/fiber` + `drei` y aplica la expresión del ICM: sonrisa/cejas
+  (happy), rostro relajado (neutral), ceño + párpados + torso encorvado
+  (tired), con aura del color del estado y rotación táctil.
+- Carga **diferida** (`next/dynamic`, `ssr:false`): three.js no afecta el
+  bundle inicial y todo corre en el navegador → **compatible con Vercel** sin
+  configuración extra.
+- En **Mi gemelo** aparece un toggle "Ver 2D / Ver 3D" cuando existe avatar 3D.
 
 ## Artefactos del proyecto
 
