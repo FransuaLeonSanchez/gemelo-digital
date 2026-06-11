@@ -5,7 +5,6 @@ export type ScreenId =
   | "welcome"
   | "splash"
   | "createTwin"
-  | "rpm3d"
   | "customize"
   | "twinGenerating"
   | "profileForm"

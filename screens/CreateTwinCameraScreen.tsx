@@ -7,7 +7,6 @@ import {
   RotateCcw,
   AlertTriangle,
   CheckCircle2,
-  Box,
 } from "lucide-react";
 import { TopBar } from "@/components/ui/TopBar";
 import { Button } from "@/components/ui/Button";
@@ -346,14 +345,6 @@ export function CreateTwinCameraScreen({ onNav, setUserPhoto }: Props) {
           onClick={() => setMode("gallery")}
         />
         <OptionCard
-          icon={<Box size={20} />}
-          color="#FFB23E"
-          title="Gemelo 3D realista"
-          body="Selfie → avatar 3D animado (Ready Player Me)."
-          onClick={() => onNav("rpm3d")}
-          beta
-        />
-        <OptionCard
           icon={<UserPlus size={20} />}
           color="#A78BFA"
           title="Crear sin foto"
@@ -379,7 +370,7 @@ export function CreateTwinCameraScreen({ onNav, setUserPhoto }: Props) {
 }
 
 function OptionCard({
-  icon, color, title, body, onClick, recommended, beta,
+  icon, color, title, body, onClick, recommended,
 }: {
   icon: React.ReactNode;
   color: string;
@@ -387,7 +378,6 @@ function OptionCard({
   body: string;
   onClick: () => void;
   recommended?: boolean;
-  beta?: boolean;
 }) {
   return (
     <button
@@ -410,14 +400,6 @@ function OptionCard({
               style={{ backgroundColor: `${color}22`, color }}
             >
               Recomendado
-            </span>
-          )}
-          {beta && (
-            <span
-              className="text-[9px] font-extrabold px-1.5 py-0.5 rounded-full uppercase tracking-wider"
-              style={{ backgroundColor: `${color}22`, color }}
-            >
-              Beta 3D
             </span>
           )}
         </div>

@@ -1,6 +1,5 @@
 "use client";
 import { useMemo, useState } from "react";
-import dynamic from "next/dynamic";
 import {
   Sparkles,
   TrendingDown,
@@ -15,17 +14,6 @@ import { Pill } from "@/components/ui/Pill";
 import { Slider } from "@/components/ui/Slider";
 import { Button } from "@/components/ui/Button";
 import { TwinAvatar } from "@/components/Twin/TwinAvatar";
-
-// El visor 3D usa three.js (WebGL): solo cliente, carga diferida para no
-// engordar el bundle inicial. Funciona igual en Vercel.
-const Twin3D = dynamic(() => import("@/components/Twin/Twin3D"), {
-  ssr: false,
-  loading: () => (
-    <div className="w-[220px] h-[220px] flex items-center justify-center">
-      <div className="w-8 h-8 rounded-full border-2 border-brand-blue/40 border-t-brand-blue animate-spin" />
-    </div>
-  ),
-});
 import { projectICMDetailed, twinState } from "@/lib/icm";
 import { icmToday, subIndices } from "@/lib/mockData";
 import type { ScreenId, TwinAppearance } from "@/lib/types";
@@ -35,7 +23,6 @@ interface Props {
   appearance: TwinAppearance;
   useImage?: boolean;
   icmBase?: number;
-  glbUrl?: string | null;
 }
 
 function formatDelta(n: number) {
@@ -44,14 +31,7 @@ function formatDelta(n: number) {
   return rounded > 0 ? `+${rounded}` : `${rounded}`;
 }
 
-export function TwinScreen({
-  onNav,
-  appearance,
-  useImage = false,
-  icmBase = icmToday,
-  glbUrl = null,
-}: Props) {
-  const [show3D, setShow3D] = useState(true);
+export function TwinScreen({ onNav, appearance, useImage = false, icmBase = icmToday }: Props) {
   const [walk, setWalk] = useState(20);
   const [sleep, setSleep] = useState(6);
   const [carbs, setCarbs] = useState(60);
@@ -102,19 +82,7 @@ export function TwinScreen({
           transition: "background 500ms",
         }}
       >
-        {glbUrl && show3D ? (
-          <Twin3D glbUrl={glbUrl} mood={ts.mood} size={220} />
-        ) : (
-          <TwinAvatar mood={ts.mood} size={180} appearance={appearance} useImage={useImage} />
-        )}
-        {glbUrl && (
-          <button
-            onClick={() => setShow3D((v) => !v)}
-            className="mt-1 px-3 py-1 rounded-full bg-card2 border border-line text-sub text-[10px] font-extrabold uppercase tracking-wider active:scale-95"
-          >
-            {show3D ? "Ver 2D" : "Ver 3D"}
-          </button>
-        )}
+        <TwinAvatar mood={ts.mood} size={180} appearance={appearance} useImage={useImage} />
         <div className="mt-3 text-center">
           <p className="text-sub text-[10px] uppercase tracking-[0.2em] font-bold">
             ICM proyectado

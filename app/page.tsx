@@ -16,7 +16,6 @@ import { LogInputScreen } from "@/screens/LogInputScreen";
 import { ProgressScreen } from "@/screens/ProgressScreen";
 import { Projection5yScreen } from "@/screens/Projection5yScreen";
 import { RecommendationsScreen } from "@/screens/RecommendationsScreen";
-import { RPM3DCreatorScreen } from "@/screens/RPM3DCreatorScreen";
 import { AlertsScreen } from "@/screens/AlertsScreen";
 import { SubIndexDetailScreen } from "@/screens/SubIndexDetailScreen";
 import { DoctorReportScreen } from "@/screens/DoctorReportScreen";
@@ -35,7 +34,6 @@ const ONBOARDING: ScreenId[] = [
   "welcome",
   "splash",
   "createTwin",
-  "rpm3d",
   "twinGenerating",
   "customize",
   "profileForm",
@@ -57,7 +55,6 @@ export default function Page() {
   });
   const [meals, setMeals] = useState<Meal[]>([]);
   const [useImage, setUseImage] = useState(false);
-  const [glbUrl, setGlbUrl] = useState<string | null>(null);
 
   const isOnboarding = ONBOARDING.includes(screen);
 
@@ -77,15 +74,6 @@ export default function Page() {
         )}
         {screen === "createTwin" && (
           <CreateTwinCameraScreen onNav={setScreen} setUserPhoto={setUserPhoto} />
-        )}
-        {screen === "rpm3d" && (
-          <RPM3DCreatorScreen
-            onNav={setScreen}
-            onCreated={(url) => {
-              setGlbUrl(url);
-              setUseImage(false);
-            }}
-          />
         )}
         {screen === "twinGenerating" && (
           <TwinGenerationScreen
@@ -139,7 +127,6 @@ export default function Page() {
             appearance={appearance}
             useImage={useImage}
             icmBase={liveICM(meals)}
-            glbUrl={glbUrl}
           />
         )}
         {screen === "log" && (
