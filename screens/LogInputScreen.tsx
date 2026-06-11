@@ -61,12 +61,45 @@ const loadIdx = (l: GlucemicLoad) => (l === "Baja" ? 0 : l === "Media" ? 1 : 2);
 
 type CapStage = "options" | "camera" | "analyzing" | "detected" | "denied";
 
+interface DetectionResult {
+  name: string;
+  carbs: number;
+  kcal: number;
+  load: GlucemicLoad;
+  predictedPeak: number;
+  source: "gemini" | "local";
+  confidence: number;
+}
+
+/** Llama a /api/analyze-meal con la foto. Devuelve null si Gemini no responde. */
+async function analyzeWithGemini(
+  photoDataUrl: string,
+  mealType: MealType,
+): Promise<DetectionResult | null> {
+  try {
+    const [head, base64] = photoDataUrl.split(",");
+    if (!base64) return null;
+    const mimeType = head.match(/data:(.*?);/)?.[1] ?? "image/jpeg";
+    const res = await fetch("/api/analyze-meal", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ imageBase64: base64, mimeType, mealType }),
+    });
+    const data = await res.json();
+    if (!data.ok) return null;
+    return { ...data.meal, source: "gemini" };
+  } catch {
+    return null;
+  }
+}
+
 export function LogInputScreen({ onNav, meals, setMeals }: Props) {
   const [selected, setSelected] = useState<MealType | null>(null);
   const [stage, setStage] = useState<CapStage>("options");
   const [photo, setPhoto] = useState<string | null>(null);
   const [flash, setFlash] = useState(false);
   const [showDoneToast, setShowDoneToast] = useState<MealType | null>(null);
+  const [result, setResult] = useState<DetectionResult | null>(null);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -80,10 +113,30 @@ export function LogInputScreen({ onNav, meals, setMeals }: Props) {
   };
   useEffect(() => () => stopCamera(), []);
 
+  /**
+   * Análisis del plato: intenta Gemini primero (foto real → API route);
+   * si falla (sin créditos / sin red), cae a la estimación local por tipo de
+   * comida. Garantiza un mínimo de 1.2 s de "análisis" para que el loader
+   * se sienta natural.
+   */
+  const analyze = async (photoDataUrl: string, mealType: MealType) => {
+    setStage("analyzing");
+    const minDelay = new Promise((r) => setTimeout(r, 1200));
+    const detection = analyzeWithGemini(photoDataUrl, mealType);
+    const [, real] = await Promise.all([minDelay, detection]);
+    if (real && real.confidence > 0) {
+      setResult(real);
+    } else {
+      setResult({ ...MOCK_DETECTION[mealType], source: "local", confidence: 90 });
+    }
+    setStage("detected");
+  };
+
   const openSlot = (t: MealType) => {
     setSelected(t);
     setStage("options");
     setPhoto(null);
+    setResult(null);
   };
 
   const closeCapture = () => {
@@ -91,6 +144,7 @@ export function LogInputScreen({ onNav, meals, setMeals }: Props) {
     setSelected(null);
     setStage("options");
     setPhoto(null);
+    setResult(null);
   };
 
   const enableCamera = async () => {
@@ -122,10 +176,10 @@ export function LogInputScreen({ onNav, meals, setMeals }: Props) {
     const sx = (v.videoWidth - size) / 2;
     const sy = (v.videoHeight - size) / 2;
     canvas.getContext("2d")?.drawImage(v, sx, sy, size, size, 0, 0, size, size);
-    setPhoto(canvas.toDataURL("image/jpeg", 0.85));
+    const dataUrl = canvas.toDataURL("image/jpeg", 0.85);
+    setPhoto(dataUrl);
     stopCamera();
-    setStage("analyzing");
-    setTimeout(() => setStage("detected"), 1300);
+    if (selected) analyze(dataUrl, selected);
   };
 
   const handleFile = (e: ChangeEvent<HTMLInputElement>) => {
@@ -133,19 +187,24 @@ export function LogInputScreen({ onNav, meals, setMeals }: Props) {
     if (!f) return;
     const reader = new FileReader();
     reader.onload = () => {
-      setPhoto(reader.result as string);
-      setStage("analyzing");
-      setTimeout(() => setStage("detected"), 1300);
+      const dataUrl = reader.result as string;
+      setPhoto(dataUrl);
+      if (selected) analyze(dataUrl, selected);
     };
     reader.readAsDataURL(f);
   };
 
   const registerMeal = () => {
     if (!selected) return;
-    const detected = MOCK_DETECTION[selected];
+    const r: DetectionResult =
+      result ?? { ...MOCK_DETECTION[selected], source: "local", confidence: 90 };
     const meal: Meal = {
       type: selected,
-      ...detected,
+      name: r.name,
+      carbs: r.carbs,
+      kcal: r.kcal,
+      load: r.load,
+      predictedPeak: r.predictedPeak,
       time: new Date().toLocaleTimeString("es-PE", {
         hour: "2-digit",
         minute: "2-digit",
@@ -180,7 +239,7 @@ export function LogInputScreen({ onNav, meals, setMeals }: Props) {
   if (selected) {
     const slot = SLOTS.find((s) => s.type === selected)!;
     const Icon = slot.icon;
-    const detected = MOCK_DETECTION[selected];
+    const detected = result ?? { ...MOCK_DETECTION[selected], source: "local" as const, confidence: 90 };
 
     return (
       <div className="flex flex-col h-full px-5 pb-5">
@@ -291,10 +350,15 @@ export function LogInputScreen({ onNav, meals, setMeals }: Props) {
               <>
                 <Card className="mt-3">
                   <div className="flex items-center justify-between mb-2">
-                    <Pill color="#4DA3FF">
-                      <Sparkles size={10} /> Detectado por IA
+                    <Pill color={detected.source === "gemini" ? "#A78BFA" : "#4DA3FF"}>
+                      <Sparkles size={10} />{" "}
+                      {detected.source === "gemini"
+                        ? "Analizado con Gemini"
+                        : "Detectado por IA"}
                     </Pill>
-                    <span className="text-hint text-[10px]">95 % confianza</span>
+                    <span className="text-hint text-[10px]">
+                      {detected.confidence} % confianza
+                    </span>
                   </div>
                   <p className="text-txt text-[15px] font-extrabold">{detected.name}</p>
                   <div className="grid grid-cols-3 gap-2 mt-3">
@@ -319,6 +383,7 @@ export function LogInputScreen({ onNav, meals, setMeals }: Props) {
                     icon={<RotateCcw size={16} />}
                     onClick={() => {
                       setPhoto(null);
+                      setResult(null);
                       setStage("options");
                     }}
                   >

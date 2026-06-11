@@ -21,8 +21,8 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { ScoreRing } from "@/components/charts/ScoreRing";
 import { Sparkline } from "@/components/charts/Sparkline";
 import { TwinAvatar } from "@/components/Twin/TwinAvatar";
-import { glucoseDay, mockUser, recommendations, subIndices } from "@/lib/mockData";
-import { twinState } from "@/lib/icm";
+import { glucoseDay, mockUser, recommendations } from "@/lib/mockData";
+import { liveSubIndices, twinState } from "@/lib/icm";
 import type { Meal, MealType, ScreenId, SubIndexKey, TwinAppearance } from "@/lib/types";
 
 interface Props {
@@ -67,6 +67,7 @@ export function HomeScreen({
   meals,
 }: Props) {
   const ts = twinState(icm);
+  const subIndices = liveSubIndices(meals);
   const peak = Math.max(...glucoseDay);
   const peakIdx = glucoseDay.indexOf(peak);
   const peakTime = `${String(Math.floor(peakIdx / 2)).padStart(2, "0")}:${peakIdx % 2 === 0 ? "00" : "30"}`;

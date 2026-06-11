@@ -1,7 +1,43 @@
-import type { Mood, SubIndex } from "./types";
+import type { Meal, Mood, SubIndex } from "./types";
+import { subIndices } from "./mockData";
 
 export function computeICM(items: SubIndex[]): number {
   return Math.round(items.reduce((a, x) => a + (x.value * x.weight) / 100, 0));
+}
+
+/**
+ * Sub-índices "en vivo": el baseline mock ajustado por las comidas que el
+ * usuario registró hoy. Así el gemelo reacciona de verdad al registro:
+ *
+ *  - Nutrición: parte de un estimado (54) y converge al promedio de carga
+ *    glucémica de las comidas reales (Baja=30 · Media=55 · Alta=80).
+ *  - Glucosa: cada comida de carga Alta suma +5 (más picos esperados),
+ *    cada Baja resta 3 (día más estable).
+ */
+export function liveSubIndices(meals: Meal[]): SubIndex[] {
+  if (meals.length === 0) return subIndices;
+
+  const loadScore = { Baja: 30, Media: 55, Alta: 80 } as const;
+  const avgNutrition =
+    meals.reduce((a, m) => a + loadScore[m.load], 0) / meals.length;
+
+  const glucoseShift = meals.reduce(
+    (a, m) => a + (m.load === "Alta" ? 5 : m.load === "Baja" ? -3 : 0),
+    0,
+  );
+
+  return subIndices.map((s) => {
+    if (s.key === "Nutrición")
+      return { ...s, value: Math.round(clamp(avgNutrition, 0, 100)) };
+    if (s.key === "Glucosa")
+      return { ...s, value: Math.round(clamp(s.value + glucoseShift, 0, 100)) };
+    return s;
+  });
+}
+
+/** ICM del día recalculado con las comidas registradas. */
+export function liveICM(meals: Meal[]): number {
+  return computeICM(liveSubIndices(meals));
 }
 
 export interface TwinStateInfo {

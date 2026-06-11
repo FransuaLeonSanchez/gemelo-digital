@@ -1,0 +1,177 @@
+================================================================================
+GEMA — MODELO PREDICTIVO DEL GEMELO DIGITAL METABOLICO
+Descripcion tecnica del modelo · MVP · Junio 2026
+Proyecto de innovacion — Lima, Peru
+================================================================================
+
+1. QUE PREDICE EL MODELO
+--------------------------------------------------------------------------------
+El gemelo digital de GEMA usa DOS modelos complementarios:
+
+MODELO 1 — CLASIFICADOR DE RIESGO METABOLICO
+  Algoritmo MVP : Random Forest (200 arboles, scikit-learn)
+  Que predice   : el nivel de riesgo metabolico actual del usuario,
+                  en 3 clases: bajo / moderado / alto
+                  + la probabilidad de cada clase (la app la usa para
+                  el color y la expresion del gemelo).
+  Frecuencia    : se recalcula cada vez que llegan datos nuevos
+                  (en produccion: cada 15 minutos segun la guia tecnica).
+
+MODELO 2 — PREDICTOR DE PICO GLUCEMICO POSTPRANDIAL
+  Algoritmo MVP : Gradient Boosting Regressor (400 arboles, scikit-learn)
+  Algoritmo PROD: LSTM (TensorFlow) con la serie CGM de las ultimas 12 h,
+                  segun la guia tecnica del proyecto. El GBM es el baseline
+                  cientificamente respaldado (es el mismo enfoque del paper
+                  de Zeevi 2015, base de Twin Health).
+  Que predice   : el pico de glucosa (mg/dL) que una comida producira
+                  ~60 minutos despues de comerla. Es el numero que la app
+                  muestra al registrar un plato ("este plato podria subir
+                  tu glucosa a ~158 mg/dL").
+
+2. DATA DE ENTRADA (INPUTS DE LA PERSONA REAL)
+--------------------------------------------------------------------------------
+MODELO 1 — resumen de los ultimos 7 dias del usuario (8 variables):
+  - cv_glucemico_pct        coeficiente de variacion glucemica (del CGM)
+  - tiempo_en_rango_pct     % del tiempo con glucosa 70-140 mg/dL (del CGM)
+  - pico_postprandial_prom  pico promedio despues de comidas (del CGM)
+  - sueno_promedio_h        horas de sueno promedio (del smartwatch)
+  - pasos_promedio_dia      pasos diarios promedio (del smartwatch)
+  - hrv_promedio_ms         variabilidad cardiaca = proxy de estres (smartwatch)
+  - indice_tyg              ln(trigliceridos/2) + ln(glucosa_ayunas/2),
+                            proxy de resistencia a la insulina (laboratorio,
+                            opcional — si no hay, se imputa por edad/cintura)
+  - cintura_cm              circunferencia abdominal (formulario de la app)
+
+MODELO 2 — el evento de comida que el usuario registra (8 variables):
+  - glucosa_basal_mgdl      glucosa al momento de comer (CGM o estimada)
+  - carbohidratos_g         carbohidratos del plato (foto analizada por
+                            Gemini en la app, o base de datos CENAN)
+  - indice_glucemico        IG del plato (Gemini / tabla de alimentos)
+  - carga_glucemica         carbohidratos x IG / 100
+  - caminata_post_min       minutos de caminata despues de comer (smartwatch)
+  - sueno_anoche_h          horas dormidas la noche anterior (smartwatch)
+  - hrv_ms                  HRV actual (smartwatch)
+  - hora_dia                hora del dia (patron circadiano)
+
+COMO ENTRAN LOS DATOS EN LA PRACTICA:
+  1. La app GEMA captura la foto del plato -> Gemini estima carbohidratos,
+     kcal y carga glucemica -> esos valores alimentan el Modelo 2.
+  2. El smartwatch (Huawei Watch Fit 4 en el MVP) aporta HRV, pasos y sueno
+     via Bluetooth/Health API.
+  3. El sensor CGM (FreeStyle Libre en el roadmap) aporta la glucosa continua.
+  4. El formulario de onboarding aporta cintura, edad, sexo, antecedentes.
+  5. El backend agrega los 7 dias y llama a los dos modelos.
+
+3. OUTPUTS (LO QUE DEVUELVE EL GEMELO)
+--------------------------------------------------------------------------------
+MODELO 1:
+  - clase de riesgo: "bajo" | "moderado" | "alto"
+  - probabilidades por clase, ej: {bajo: 0.002, moderado: 0.49, alto: 0.508}
+  USO EN LA APP: color/expresion del gemelo, pill de riesgo, alertas cuando
+  la probabilidad de "alto" cruza el umbral, reporte medico.
+
+MODELO 2:
+  - pico_60min_mgdl: numero (ej. 164 mg/dL)
+  USO EN LA APP: prediccion al registrar comida, simulador what-if
+  (evalua el modelo en escenarios contrafactuales: "y si camino 25 min?",
+  "y si cambio arroz por quinua?"), motor de recomendaciones (elige el
+  escenario que mas baja el pico).
+
+4. RESULTADOS OBTENIDOS (con datos sinteticos, ver seccion 5)
+--------------------------------------------------------------------------------
+MODELO 1 (test set, n=1200):
+  - Accuracy: 88.5 %        (meta de la guia tecnica: > 85 % -> CUMPLE)
+  - Validacion cruzada 5-fold: 87.5 % +/- 0.9 %
+  - F1 por clase: bajo 0.90 · moderado 0.85 · alto 0.91
+  - Variables mas importantes: tiempo en rango (29 %), CV glucemico (24 %),
+    pico postprandial (17 %), indice TyG (9 %), cintura (8 %)
+
+MODELO 2 (test set, n=1800):
+  - MAE: 6.3 mg/dL           (meta de la guia tecnica: < 15 mg/dL -> CUMPLE)
+  - R²: 0.914
+  - Ejemplo real de la app (arroz con pollo, 78 g carbos, IG 72,
+    usuario que durmio 5.7 h):
+      sin caminar           -> 164 mg/dL  (pico alto)
+      caminando 25 min      -> 149 mg/dL
+      con quinua (IG 53)    -> 150 mg/dL
+      quinua + caminata     -> 132 mg/dL  (en rango!)
+    Esto justifica cuantitativamente las 2 recomendaciones principales
+    que muestra la app.
+
+5. CON QUE DATOS SE ENTRENO (Y COMO SE PASARA A DATOS REALES)
+--------------------------------------------------------------------------------
+HOY (MVP): poblacion sintetica de 6,000 usuarios y 9,000 eventos de comida,
+generada con distribuciones que replican NHANES (USA) / ENDES (Peru) para
+adultos de 20-45 anos, y con relaciones fisiologicas tomadas de papers
+publicados (ver seccion 7). El archivo datos_sinteticos.py documenta cada
+supuesto del generador.
+
+POR QUE SINTETICO: aun no existen usuarios reales con CGM en el proyecto.
+El dataset sintetico permite construir y validar el PIPELINE completo
+(features -> entrenamiento -> metricas -> inferencia -> app) de forma que
+cuando lleguen datos reales SOLO se cambia la fuente de datos, no el codigo.
+
+ROADMAP DE DATOS:
+  Fase MVP     : sintetico fisiologico (este repo)
+  Fase piloto  : 2 semanas de calibracion por usuario real (CGM + smartwatch)
+                 -> fine-tuning individual del gemelo
+  Fase prod    : reemplazo del GBM por LSTM (serie CGM 12 h ->
+                 prediccion a 30/60/120 min), reentrenamiento semanal,
+                 pre-entrenamiento con NHANES + ENDES
+  Validacion   : comparar prediccion vs CGM real, meta MAE < 15 mg/dL
+
+6. COMO EJECUTAR
+--------------------------------------------------------------------------------
+OPCION A — Google Colab (recomendada para revisar):
+  1. Subir GEMA_modelo_predictivo.ipynb a https://colab.research.google.com
+  2. Runtime -> Run all. No requiere instalacion (sklearn viene en Colab).
+  3. El notebook genera los datos, entrena ambos modelos, muestra metricas,
+     graficos y los escenarios de la app.
+
+OPCION B — Local:
+  cd modelo-predictivo
+  python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
+  .venv/bin/python entrenar_modelo.py      # entrena y guarda los .joblib
+  .venv/bin/python predecir.py             # demo de inferencia (Fransua)
+
+ARCHIVOS DE ESTA CARPETA:
+  GEMA_modelo_predictivo.ipynb  notebook Colab completo (entrenar + evaluar)
+  datos_sinteticos.py           generador de poblacion sintetica documentado
+  entrenar_modelo.py            entrenamiento + metricas + guardado
+  predecir.py                   demo de inferencia con los modelos guardados
+  requirements.txt              dependencias (scikit-learn, pandas, joblib)
+  modelos/clasificador_riesgo_rf.joblib   Modelo 1 entrenado
+  modelos/predictor_pico_gbm.joblib       Modelo 2 entrenado
+  modelos/metrics.json                    metricas de la ultima corrida
+  DESCRIPCION_MODELO.txt        este archivo
+
+7. REFERENCIAS CIENTIFICAS
+--------------------------------------------------------------------------------
+- Zeevi D, et al. "Personalized Nutrition by Prediction of Glycemic
+  Responses". Cell. 2015;163(5):1079-1094. (PPGR predicho con gradient
+  boosting a partir de comida + persona — base del Modelo 2)
+- Shamanna P, et al. "Reducing HbA1c in Type 2 Diabetes Using Digital Twin
+  Technology-Enabled Precision Nutrition". Diabetes Ther. 2020;11:2703-2714.
+  (Twin Health: 71 % de remision a 1 ano vs 2.4 % estandar)
+- Reynolds AN, et al. "Advice to walk after meals is more effective for
+  lowering postprandial glycaemia than advice that does not specify timing".
+  Diabetologia. 2016;59:2572-2578. (caminata post-comida -20 % pico)
+- Spiegel K, Leproult R, Van Cauter E. "Impact of sleep debt on metabolic
+  and endocrine function". Lancet. 1999;354:1435-1439. (sueno corto ->
+  resistencia a la insulina +30 %)
+- Simental-Mendia LE, et al. "The product of fasting glucose and
+  triglycerides as surrogate for identifying insulin resistance".
+  Metab Syndr Relat Disord. 2008;6(4):299-304. (indice TyG)
+- Gurka MJ, DeBoer MD, et al. "An examination of sex and racial/ethnic
+  differences in the metabolic syndrome among adults: a confirmatory factor
+  analysis and a resulting continuous severity score". Metabolism. 2014.
+  (MetS-Z, score continuo — inspiracion del ICM)
+- NHANES (CDC, USA) y ENDES (INEI, Peru): datasets poblacionales de
+  referencia para el pre-entrenamiento del modelo base.
+- Oviedo S, et al. "A review of personalized blood glucose prediction
+  strategies for T1DM patients". Int J Numer Method Biomed Eng. 2017.
+  (revision de modelos LSTM para prediccion glucemica — roadmap prod)
+
+================================================================================
+Equipo GEMA · Estudio Shonos · Ingenieria Industrial · Lima, Peru
+================================================================================

@@ -1,14 +1,42 @@
-# Gemelo Digital Metabólico — POC
+# GEMA — Tu gemelo metabólico (MVP)
 
-Prototipo frontend de una app móvil de prevención del síndrome metabólico. La
-app está renderizada dentro de un **marco de teléfono** centrado en la web y
-todo está **100 % mockeado**: sin backend, sin cámara real, sin IA real, sin
-llamadas de red.
+**GEMA** (GEmelo MetAbólico — "tu salud es una gema") es un MVP de app móvil de
+prevención del síndrome metabólico, renderizada dentro de un **marco de
+teléfono** en la web.
 
 > El corazón del producto es el **gemelo digital**: un avatar animado que cambia
 > de expresión, color y postura según el **Índice de Carga Metabólica (ICM)**
 > calculado a partir de 5 sub-índices (glucosa, actividad, sueño, estrés,
 > nutrición).
+
+## Qué es real y qué es simulado (estado actual del MVP)
+
+| Funcionalidad | Estado |
+|---|---|
+| Cámara (selfie del gemelo y foto del plato) | **Real** (getUserMedia) |
+| Análisis del plato con IA | **Real** — Gemini 2.0 Flash vía `/api/analyze-meal`; fallback local si la API no responde |
+| ICM recalculado al registrar comidas | **Real** (lógica local en `lib/icm.ts`) |
+| Simulador what-if | **Real** (modelo fisiológico local con fuentes) |
+| Modelo predictivo (Random Forest + GBM) | **Real y entrenado** — ver `modelo-predictivo/` |
+| Login Google, smartwatch BLE, sensor CGM | Simulados (mock visual) |
+
+## Artefactos del proyecto
+
+- **App** — este repo (Next.js 14).
+- **Flujograma del sistema** — [docs/flujograma-gema.svg](docs/flujograma-gema.svg)
+  y [docs/flujograma-gema.png](docs/flujograma-gema.png) (regenerable con
+  `python3 docs/generar_flujograma.py`).
+- **Modelo predictivo** — [modelo-predictivo/](modelo-predictivo/): notebook
+  Colab, scripts de entrenamiento, modelos `.joblib` entrenados y
+  `DESCRIPCION_MODELO.txt` con inputs/outputs/resultados/referencias.
+
+## Análisis de comida con Gemini
+
+La clave vive en `.env.local` (`GEMINI_API_KEY`). La clave actual es válida
+pero su proyecto **agotó los créditos** (error 429): mientras tanto la app usa
+la estimación local automáticamente. Para activar el análisis real, genera una
+clave con free tier en <https://aistudio.google.com/apikey>, reemplázala en
+`.env.local` y reinicia el dev server. Sin cambios de código.
 
 ---
 

@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gemelo Digital Metabólico</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; background: #0f1117; color: #e0e0e0; min-height: 100vh; }
+
+  .hero {
+    background: linear-gradient(135deg, #0f1117 0%, #1a1f2e 50%, #0f1117 100%);
+    padding: 40px 20px 30px;
+    text-align: center;
+    border-bottom: 1px solid #2a2f3e;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: #1e3a5f;
+    color: #4da6ff;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    padding: 5px 14px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+    border: 1px solid #4da6ff33;
+  }
+  .hero h1 { font-size: 28px; font-weight: 800; color: #fff; line-height: 1.2; margin-bottom: 10px; }
+  .hero h1 span { color: #4da6ff; }
+  .hero p { font-size: 14px; color: #8892a4; max-width: 600px; margin: 0 auto 20px; line-height: 1.6; }
+
+  .pulse-dot {
+    display: inline-block; width: 10px; height: 10px;
+    background: #00d4aa; border-radius: 50%;
+    animation: pulse 1.5s infinite;
+    margin-right: 6px; vertical-align: middle;
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.5); opacity: 0.6; }
+  }
+
+  .tabs { display: flex; justify-content: center; gap: 8px; padding: 20px 16px 0; flex-wrap: wrap; }
+  .tab {
+    padding: 8px 18px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    cursor: pointer; border: 1px solid #2a2f3e; background: #1a1f2e;
+    color: #8892a4; transition: all 0.2s;
+  }
+  .tab:hover { border-color: #4da6ff44; color: #ccd6f6; }
+  .tab.active { background: #4da6ff; color: #fff; border-color: #4da6ff; }
+
+  .section { display: none; padding: 24px 16px 40px; max-width: 900px; margin: 0 auto; }
+  .section.active { display: block; }
+
+  .analogy-box {
+    background: #1a1f2e; border: 1px solid #2a2f3e; border-radius: 16px;
+    padding: 24px; margin-bottom: 20px;
+  }
+  .analogy-box h2 { font-size: 18px; color: #fff; margin-bottom: 12px; }
+  .analogy-box p { font-size: 14px; color: #8892a4; line-height: 1.7; margin-bottom: 10px; }
+  .highlight { color: #4da6ff; font-weight: 700; }
+  .highlight-green { color: #00d4aa; font-weight: 700; }
+
+  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 20px; }
+  .compare-card {
+    background: #141820; border-radius: 12px; padding: 18px;
+    border: 1px solid #2a2f3e;
+  }
+  .compare-card.old { border-top: 3px solid #ff6b6b; }
+  .compare-card.new { border-top: 3px solid #00d4aa; }
+  .compare-card h3 { font-size: 13px; font-weight: 700; margin-bottom: 10px; }
+  .compare-card.old h3 { color: #ff6b6b; }
+  .compare-card.new h3 { color: #00d4aa; }
+  .compare-card ul { list-style: none; }
+  .compare-card ul li { font-size: 13px; color: #8892a4; padding: 4px 0; display: flex; gap: 8px; }
+  .compare-card.old ul li::before { color: #ff6b6b; content: '✗'; }
+  .compare-card.new ul li::before { color: #00d4aa; content: '✓'; }
+
+  .flow-step {
+    background: #1a1f2e; border: 1px solid #2a2f3e; border-radius: 14px;
+    padding: 18px 20px; margin-bottom: 12px; display: flex; align-items: flex-start; gap: 16px;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .flow-step:hover, .flow-step.open { border-color: #4da6ff44; background: #1e2535; }
+  .flow-step.open { border-color: #4da6ff; }
+  .step-num {
+    width: 36px; height: 36px; border-radius: 50%; display: flex;
+    align-items: center; justify-content: center; font-size: 15px;
+    font-weight: 800; flex-shrink: 0; margin-top: 2px;
+  }
+  .step-num.s1 { background: #1e3a5f; color: #4da6ff; }
+  .step-num.s2 { background: #1a3a2a; color: #00d4aa; }
+  .step-num.s3 { background: #3a2a1a; color: #ffaa44; }
+  .step-num.s4 { background: #2a1a3a; color: #cc88ff; }
+  .step-content { flex: 1; }
+  .step-content h3 { font-size: 15px; color: #fff; font-weight: 700; margin-bottom: 4px; }
+  .step-content p { font-size: 13px; color: #8892a4; line-height: 1.5; }
+  .step-detail {
+    display: none; margin-top: 12px; padding: 12px;
+    background: #0f1117; border-radius: 8px; font-size: 13px; color: #ccd6f6;
+    line-height: 1.7;
+  }
+  .step-detail.visible { display: block; }
+  .step-arrow { color: #4da6ff; font-size: 18px; margin-left: auto; transition: transform 0.2s; align-self: flex-start; margin-top: 8px; }
+  .flow-step.open .step-arrow { transform: rotate(180deg); }
+
+  .var-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .var-card { background: #1a1f2e; border-radius: 14px; padding: 20px; border: 1px solid #2a2f3e; }
+  .var-card.vi { border-top: 4px solid #4da6ff; }
+  .var-card.vd { border-top: 4px solid #00d4aa; }
+  .var-label { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px; }
+  .var-card.vi .var-label { color: #4da6ff; }
+  .var-card.vd .var-label { color: #00d4aa; }
+  .var-card h3 { font-size: 16px; color: #fff; font-weight: 700; margin-bottom: 14px; }
+  .tag { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; margin: 3px; }
+  .tag.blue { background: #1e3a5f; color: #4da6ff; border: 1px solid #4da6ff33; }
+  .tag.green { background: #1a3a2a; color: #00d4aa; border: 1px solid #00d4aa33; }
+  .tag.orange { background: #3a2a1a; color: #ffaa44; border: 1px solid #ffaa4433; }
+  .tag.purple { background: #2a1a3a; color: #cc88ff; border: 1px solid #cc88ff33; }
+
+  .arch-diagram { background: #1a1f2e; border: 1px solid #2a2f3e; border-radius: 16px; padding: 24px; }
+  .arch-layer {
+    background: #141820; border-radius: 10px; padding: 14px 18px;
+    margin-bottom: 10px; display: flex; align-items: center; gap: 14px; border-left: 4px solid;
+  }
+  .arch-layer.l1 { border-color: #4da6ff; }
+  .arch-layer.l2 { border-color: #ffaa44; }
+  .arch-layer.l3 { border-color: #cc88ff; }
+  .arch-layer.l4 { border-color: #00d4aa; }
+  .arch-icon { font-size: 24px; }
+  .arch-info h4 { font-size: 14px; color: #fff; font-weight: 700; }
+  .arch-info p { font-size: 12px; color: #8892a4; margin-top: 2px; }
+  .arch-arrow { text-align: center; color: #4da6ff; font-size: 20px; margin: 4px 0; }
+
+  .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 20px; }
+  .stat-card { background: #1a1f2e; border: 1px solid #2a2f3e; border-radius: 12px; padding: 18px; text-align: center; }
+  .stat-num { font-size: 28px; font-weight: 800; color: #4da6ff; }
+  .stat-label { font-size: 12px; color: #8892a4; margin-top: 4px; line-height: 1.4; }
+  .stat-card.green .stat-num { color: #00d4aa; }
+  .stat-card.orange .stat-num { color: #ffaa44; }
+
+  .twin-health { background: linear-gradient(135deg, #1a2a1a, #1a1f2e); border: 1px solid #00d4aa44; border-radius: 14px; padding: 20px; }
+  .twin-health h3 { color: #00d4aa; font-size: 15px; margin-bottom: 10px; }
+  .twin-health p { color: #8892a4; font-size: 13px; line-height: 1.7; }
+
+  @media (max-width: 600px) {
+    .compare-grid, .var-grid, .stat-grid { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">🧬 Gemelo Digital Metabólico</div>
+  <h1>Gemelo Digital <span>Metabólico</span></h1>
+  <p>
+    <span class="pulse-dot"></span>
+    Un sistema inteligente que crea una <strong>copia digital de tu metabolismo</strong> para detectar riesgos antes de que aparezcan los síntomas.
+  </p>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showSection('que-es', this)">¿Qué es?</div>
+  <div class="tab" onclick="showSection('como-funciona', this)">¿Cómo funciona?</div>
+  <div class="tab" onclick="showSection('variables', this)">Variables</div>
+  <div class="tab" onclick="showSection('arquitectura', this)">Arquitectura</div>
+  <div class="tab" onclick="showSection('impacto', this)">Impacto</div>
+</div>
+
+<div class="section active" id="que-es">
+  <div class="analogy-box">
+    <h2>🤔 Imagínalo así...</h2>
+    <p>Así como los ingenieros de la NASA crean un <span class="highlight">gemelo digital de un cohete</span> para simular fallas antes de que ocurran en el espacio real, este proyecto crea un <span class="highlight-green">gemelo digital de tu metabolismo</span>.</p>
+    <p>Es como tener un <strong>doctor virtual que te conoce mejor que tú mismo</strong>: analiza tu glucosa en sangre, tus horas de sueño, tu estrés y tu actividad física <em>todos los días</em>, y te avisa cuando algo está saliendo mal — antes de que te enfermes.</p>
+    <p>El problema en Perú: <span class="highlight">1 de cada 5 peruanos tiene prediabetes sin saberlo</span>. El sistema de salud solo detecta la enfermedad cuando ya hay daño. Este gemelo digital detecta el riesgo <strong>años antes</strong>.</p>
+  </div>
+  <div class="compare-grid">
+    <div class="compare-card old">
+      <h3>❌ Sistema actual (sin gemelo)</h3>
+      <ul>
+        <li>Análisis de sangre 1 vez al año</li>
+        <li>El médico solo ve datos del día del examen</li>
+        <li>Detecta la diabetes cuando ya existe</li>
+        <li>Sin seguimiento de hábitos diarios</li>
+        <li>Recomendaciones genéricas para todos</li>
+      </ul>
+    </div>
+    <div class="compare-card new">
+      <h3>✅ Con el Gemelo Digital</h3>
+      <ul>
+        <li>Monitoreo continuo de glucosa 24/7</li>
+        <li>Analiza 365 días de tus hábitos</li>
+        <li>Detecta el riesgo metabólico en etapa temprana</li>
+        <li>Seguimiento de alimentación, sueño y estrés</li>
+        <li>Recomendaciones personalizadas para ti</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="como-funciona">
+  <div class="flow-step" onclick="toggleStep(this)">
+    <div class="step-num s1">1</div>
+    <div class="step-content">
+      <h3>📡 Recolección de datos en tiempo real</h3>
+      <p>El usuario usa 3 dispositivos conectados simultáneamente.</p>
+      <div class="step-detail">
+        <strong>📟 Sensor CGM (glucosa continua):</strong> Un pequeño parche en el brazo que mide tu glucosa en sangre cada 5 minutos, sin pinchazos.<br><br>
+        <strong>⌚ Smartwatch / Wearable:</strong> Mide tus pasos, frecuencia cardíaca, variabilidad cardíaca (HRV = nivel de estrés) y calidad de sueño.<br><br>
+        <strong>📱 App de hábitos:</strong> Tú registras qué comiste, a qué hora, cuánto estrés sientes. Tarda 2 minutos al día.
+      </div>
+    </div>
+    <div class="step-arrow">▾</div>
+  </div>
+
+  <div class="flow-step" onclick="toggleStep(this)">
+    <div class="step-num s2">2</div>
+    <div class="step-content">
+      <h3>🧠 Procesamiento con Inteligencia Artificial</h3>
+      <p>El cerebro del sistema: algoritmos que aprenden de tus datos.</p>
+      <div class="step-detail">
+        El gemelo usa modelos de <strong>Machine Learning</strong> (LSTM y Random Forest) para:<br><br>
+        → Predecir cómo va a subir tu glucosa según lo que vas a comer.<br>
+        → Detectar patrones de riesgo personalizados.<br>
+        → Calcular tu <strong>"Índice de Carga Metabólica"</strong>: un número del 0 al 100 que resume tu riesgo en tiempo real.
+      </div>
+    </div>
+    <div class="step-arrow">▾</div>
+  </div>
+
+  <div class="flow-step" onclick="toggleStep(this)">
+    <div class="step-num s3">3</div>
+    <div class="step-content">
+      <h3>🔮 El Gemelo Digital predice y simula</h3>
+      <p>Crea tu copia metabólica virtual y prueba escenarios.</p>
+      <div class="step-detail">
+        El gemelo tiene un <strong>modelo matemático de tu metabolismo</strong> específico. Puede simular:<br><br>
+        → "Si caminas 30 minutos hoy, tu glucosa bajaría X puntos."<br>
+        → "Si duermes 7 horas esta noche, tu estrés metabólico bajará Y%."<br>
+        → "Tu riesgo de desarrollar diabetes en 5 años es Z% si no cambias nada."
+      </div>
+    </div>
+    <div class="step-arrow">▾</div>
+  </div>
+
+  <div class="flow-step" onclick="toggleStep(this)">
+    <div class="step-num s4">4</div>
+    <div class="step-content">
+      <h3>💬 Recomendaciones personalizadas</h3>
+      <p>El sistema te dice exactamente qué cambiar hoy.</p>
+      <div class="step-detail">
+        En vez de decirte "come sano y haz ejercicio" (genérico), el gemelo te dice:<br><br>
+        → <strong>"Hoy tu glucosa postprandial fue alta. Prueba cambiar el arroz por quinua mañana."</strong><br>
+        → <strong>"Tu HRV indica estrés alto. 10 minutos de respiración antes de dormir mejoraría tu sueño."</strong><br>
+        → <strong>"Llevas 3 días sin alcanzar 7,000 pasos. Tu riesgo metabólico subió un 8%."</strong>
+      </div>
+    </div>
+    <div class="step-arrow">▾</div>
+  </div>
+</div>
+
+<div class="section" id="variables">
+  <div class="var-grid">
+    <div class="var-card vi">
+      <div class="var-label">Variable Independiente (VI)</div>
+      <h3>🏃 Hábitos de Vida Diarios</h3>
+      <p style="font-size:13px;color:#8892a4;margin-bottom:12px;">Lo que el usuario hace cada día. El gemelo los monitorea y modifica con recomendaciones.</p>
+      <p style="font-size:12px;color:#6a7590;margin-bottom:6px;font-weight:700;">ALIMENTACIÓN</p>
+      <span class="tag blue">Carga glucémica</span><span class="tag blue">Ultraprocesados</span><span class="tag blue">Horario de comidas</span>
+      <p style="font-size:12px;color:#6a7590;margin:10px 0 6px;font-weight:700;">SUEÑO</p>
+      <span class="tag purple">Horas dormidas</span><span class="tag purple">Calidad del sueño</span><span class="tag purple">Hora de acostarse</span>
+      <p style="font-size:12px;color:#6a7590;margin:10px 0 6px;font-weight:700;">ESTRÉS</p>
+      <span class="tag orange">HRV del wearable</span><span class="tag orange">Autoreporte estrés</span>
+      <p style="font-size:12px;color:#6a7590;margin:10px 0 6px;font-weight:700;">ACTIVIDAD FÍSICA</p>
+      <span class="tag green">Pasos diarios</span><span class="tag green">Minutos actividad</span><span class="tag green">Ejercicio de fuerza</span>
+    </div>
+    <div class="var-card vd">
+      <div class="var-label">Variable Dependiente (VD)</div>
+      <h3>🩺 Estado Metabólico / Riesgo</h3>
+      <p style="font-size:13px;color:#8892a4;margin-bottom:12px;">Lo que el cuerpo responde. Lo que el sistema detecta y busca mejorar.</p>
+      <p style="font-size:12px;color:#6a7590;margin-bottom:6px;font-weight:700;">INDICADORES CGM (continuos)</p>
+      <span class="tag green">Picos postprandiales</span><span class="tag green">Variabilidad glucémica</span><span class="tag green">Tiempo en rango 70-140</span>
+      <p style="font-size:12px;color:#6a7590;margin:10px 0 6px;font-weight:700;">INDICADORES LABORATORIO</p>
+      <span class="tag blue">Glucosa en ayunas</span><span class="tag blue">Triglicéridos</span><span class="tag blue">HDL colesterol</span><span class="tag blue">HOMA-IR</span>
+      <p style="font-size:12px;color:#6a7590;margin:10px 0 6px;font-weight:700;">ÍNDICES COMPUESTOS</p>
+      <span class="tag orange">Índice TyG</span><span class="tag orange">Índice de Carga Metabólica</span>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="arquitectura">
+  <div class="arch-diagram">
+    <h2 style="color:#fff;font-size:17px;margin-bottom:20px;text-align:center;">🏗️ ¿Cómo se construye el Gemelo Digital?</h2>
+    <div class="arch-layer l1">
+      <div class="arch-icon">📡</div>
+      <div class="arch-info"><h4>CAPA 1 — Sensores y Dispositivos (IoT)</h4><p>Sensor CGM (glucosa) · Smartwatch (HRV, pasos, sueño) · App móvil (hábitos, estrés)</p></div>
+    </div>
+    <div class="arch-arrow">⬇</div>
+    <div class="arch-layer l2">
+      <div class="arch-icon">☁️</div>
+      <div class="arch-info"><h4>CAPA 2 — Plataforma de Datos (Cloud)</h4><p>Almacenamiento seguro · Sincronización en tiempo real · API de integración de dispositivos</p></div>
+    </div>
+    <div class="arch-arrow">⬇</div>
+    <div class="arch-layer l3">
+      <div class="arch-icon">🧠</div>
+      <div class="arch-info"><h4>CAPA 3 — Motor de IA y Gemelo Digital</h4><p>Modelo LSTM (predicción temporal) · Random Forest (clasificación de riesgo) · Simulador metabólico</p></div>
+    </div>
+    <div class="arch-arrow">⬇</div>
+    <div class="arch-layer l4">
+      <div class="arch-icon">📱</div>
+      <div class="arch-info"><h4>CAPA 4 — Interfaz de Usuario</h4><p>Dashboard de riesgo metabólico · Alertas personalizadas · Recomendaciones diarias · Reporte para médico</p></div>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="impacto">
+  <div class="stat-grid">
+    <div class="stat-card"><div class="stat-num">74%</div><div class="stat-label">de adultos peruanos son sedentarios (MINSA, 2023)</div></div>
+    <div class="stat-card green"><div class="stat-num">1 de 5</div><div class="stat-label">peruanos tiene prediabetes sin saberlo (EsSalud, 2026)</div></div>
+    <div class="stat-card orange"><div class="stat-num">US$15,405M</div><div class="stat-label">costo de diabetes tipo 2 en Perú en 20 años</div></div>
+  </div>
+  <div class="twin-health">
+    <h3>🌍 Evidencia internacional: Twin Health + Cleveland Clinic</h3>
+    <p>El sistema de gemelo digital de Twin Health (USA) logró la <strong>remisión del 71% de pacientes con diabetes tipo 2</strong> en 1 año — frente al 2.4% en atención estándar. Redujo el uso de medicamentos GLP-1 en un 85%.<br><br>Este proyecto adapta ese modelo al contexto peruano: adultos de 20-45 años de Lima Metropolitana con 2 o más alteraciones metabólicas.</p>
+  </div>
+</div>
+
+<script>
+  function showSection(id, tab) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    tab.classList.add('active');
+  }
+  function toggleStep(el) {
+    const detail = el.querySelector('.step-detail');
+    const isOpen = el.classList.contains('open');
+    document.querySelectorAll('.flow-step').forEach(s => {
+      s.classList.remove('open');
+      s.querySelector('.step-detail').classList.remove('visible');
+    });
+    if (!isOpen) { el.classList.add('open'); detail.classList.add('visible'); }
+  }
+</script>
+</body>
+</html>

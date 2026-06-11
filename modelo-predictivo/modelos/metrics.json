@@ -1,0 +1,51 @@
+{
+  "clasificador_riesgo": {
+    "algoritmo": "RandomForestClassifier(n_estimators=200)",
+    "accuracy_test": 0.885,
+    "cv5_mean": 0.8753,
+    "cv5_std": 0.009,
+    "meta_guia": "> 0.85",
+    "cumple_meta": true,
+    "features": [
+      "cv_glucemico_pct",
+      "tiempo_en_rango_pct",
+      "pico_postprandial_prom",
+      "sueno_promedio_h",
+      "pasos_promedio_dia",
+      "hrv_promedio_ms",
+      "indice_tyg",
+      "cintura_cm"
+    ],
+    "importancias": {
+      "tiempo_en_rango_pct": 0.2913,
+      "cv_glucemico_pct": 0.2349,
+      "pico_postprandial_prom": 0.1733,
+      "indice_tyg": 0.0905,
+      "cintura_cm": 0.0808,
+      "pasos_promedio_dia": 0.0649,
+      "sueno_promedio_h": 0.0478,
+      "hrv_promedio_ms": 0.0166
+    }
+  },
+  "predictor_pico": {
+    "algoritmo": "GradientBoostingRegressor(n_estimators=400)",
+    "mae_test_mgdl": 6.33,
+    "r2_test": 0.9136,
+    "meta_guia": "< 15 mg/dL",
+    "cumple_meta": true,
+    "features": [
+      "glucosa_basal_mgdl",
+      "carbohidratos_g",
+      "indice_glucemico",
+      "carga_glucemica",
+      "caminata_post_min",
+      "sueno_anoche_h",
+      "hrv_ms",
+      "hora_dia"
+    ],
+    "ejemplo_arroz_con_pollo": {
+      "sin_caminar": 164.0,
+      "caminando_25min": 149.0
+    }
+  }
+}

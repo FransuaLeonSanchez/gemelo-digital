@@ -20,7 +20,7 @@ import { AlertsScreen } from "@/screens/AlertsScreen";
 import { SubIndexDetailScreen } from "@/screens/SubIndexDetailScreen";
 import { DoctorReportScreen } from "@/screens/DoctorReportScreen";
 import { ProfileScreen } from "@/screens/ProfileScreen";
-import { icmToday } from "@/lib/mockData";
+import { liveICM } from "@/lib/icm";
 import type {
   Meal,
   PairedDevice,
@@ -113,7 +113,7 @@ export default function Page() {
             onNav={setScreen}
             appearance={appearance}
             useImage={useImage}
-            icm={icmToday}
+            icm={liveICM(meals)}
             meals={meals}
             onOpenSubIndex={(k) => {
               setSubIndex(k);
@@ -122,7 +122,12 @@ export default function Page() {
           />
         )}
         {screen === "twin" && (
-          <TwinScreen onNav={setScreen} appearance={appearance} useImage={useImage} />
+          <TwinScreen
+            onNav={setScreen}
+            appearance={appearance}
+            useImage={useImage}
+            icmBase={liveICM(meals)}
+          />
         )}
         {screen === "log" && (
           <LogInputScreen onNav={setScreen} meals={meals} setMeals={setMeals} />

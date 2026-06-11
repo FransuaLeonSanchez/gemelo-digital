@@ -22,6 +22,7 @@ interface Props {
   onNav: (s: ScreenId) => void;
   appearance: TwinAppearance;
   useImage?: boolean;
+  icmBase?: number;
 }
 
 function formatDelta(n: number) {
@@ -30,19 +31,19 @@ function formatDelta(n: number) {
   return rounded > 0 ? `+${rounded}` : `${rounded}`;
 }
 
-export function TwinScreen({ onNav, appearance, useImage = false }: Props) {
+export function TwinScreen({ onNav, appearance, useImage = false, icmBase = icmToday }: Props) {
   const [walk, setWalk] = useState(20);
   const [sleep, setSleep] = useState(6);
   const [carbs, setCarbs] = useState(60);
   const [openInfo, setOpenInfo] = useState(false);
 
   const { projected, breakdown } = useMemo(
-    () => projectICMDetailed(icmToday, walk, sleep, carbs),
-    [walk, sleep, carbs],
+    () => projectICMDetailed(icmBase, walk, sleep, carbs),
+    [icmBase, walk, sleep, carbs],
   );
 
   const ts = twinState(projected);
-  const delta = projected - icmToday;
+  const delta = projected - icmBase;
 
   const message =
     delta < 0
@@ -93,7 +94,7 @@ export function TwinScreen({ onNav, appearance, useImage = false }: Props) {
             {projected}
           </p>
           <p className="text-hint text-[11px] mt-1">
-            Hoy: {icmToday} ·{" "}
+            Hoy: {icmBase} ·{" "}
             <span style={{ color: ts.color }}>
               {delta > 0 ? `+${delta}` : delta}
             </span>

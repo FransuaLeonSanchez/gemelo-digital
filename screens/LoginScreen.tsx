@@ -111,11 +111,11 @@ export function LoginScreen({ onNav }: Props) {
     <div className="flex flex-col h-full px-5 pb-6">
       {/* TITLE — siempre arriba del todo, más grande */}
       <div className="text-center pt-2 pb-1">
-        <h2 className="text-brand-blue text-[20px] font-extrabold tracking-[0.18em] uppercase leading-none">
-          Gemelo Digital
+        <h2 className="text-brand-blue text-[30px] font-extrabold tracking-[0.22em] uppercase leading-none">
+          GEMA
         </h2>
-        <p className="text-sub text-[12px] tracking-[0.32em] uppercase mt-1.5 font-bold">
-          Metabólico
+        <p className="text-sub text-[11px] tracking-[0.3em] uppercase mt-1.5 font-bold">
+          Tu gemelo metabólico
         </p>
       </div>
 

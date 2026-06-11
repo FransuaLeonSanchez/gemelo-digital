@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gemelo Digital Metabólico — Guía de Construcción</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', monospace, sans-serif; background: #0d1117; color: #c9d1d9; min-height: 100vh; }
+
+  /* HERO */
+  .hero {
+    background: #0d1117;
+    border-bottom: 1px solid #30363d;
+    padding: 36px 24px 28px;
+    text-align: center;
+  }
+  .version-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: #161b22; border: 1px solid #30363d;
+    border-radius: 20px; padding: 4px 14px;
+    font-size: 11px; color: #58a6ff; font-weight: 600;
+    letter-spacing: 1px; margin-bottom: 16px;
+    font-family: 'Courier New', monospace;
+  }
+  .status-dot { width: 8px; height: 8px; background: #3fb950; border-radius: 50%; animation: blink 1.5s infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  .hero h1 { font-size: 30px; font-weight: 800; color: #f0f6fc; margin-bottom: 8px; }
+  .hero h1 span { color: #58a6ff; }
+  .hero .subtitle { font-size: 14px; color: #8b949e; max-width: 600px; margin: 0 auto 20px; line-height: 1.6; }
+  .tech-stack { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
+  .tech-pill {
+    background: #161b22; border: 1px solid #30363d; border-radius: 6px;
+    padding: 4px 10px; font-size: 11px; color: #8b949e;
+    font-family: 'Courier New', monospace;
+  }
+
+  /* NAV */
+  .nav { display: flex; gap: 0; border-bottom: 1px solid #30363d; background: #161b22; overflow-x: auto; }
+  .nav-item {
+    padding: 12px 20px; font-size: 13px; font-weight: 600;
+    cursor: pointer; color: #8b949e; white-space: nowrap;
+    border-bottom: 2px solid transparent; transition: all 0.2s;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .nav-item:hover { color: #c9d1d9; }
+  .nav-item.active { color: #58a6ff; border-bottom-color: #58a6ff; }
+
+  /* CONTENT */
+  .content { max-width: 960px; margin: 0 auto; padding: 28px 20px 60px; }
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* CARDS */
+  .card {
+    background: #161b22; border: 1px solid #30363d; border-radius: 10px;
+    padding: 22px; margin-bottom: 16px;
+  }
+  .card h2 { font-size: 16px; color: #f0f6fc; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .card h3 { font-size: 14px; color: #c9d1d9; font-weight: 700; margin: 14px 0 8px; }
+  .card p { font-size: 13px; color: #8b949e; line-height: 1.7; margin-bottom: 10px; }
+
+  /* CODE BLOCKS */
+  .code-block {
+    background: #0d1117; border: 1px solid #30363d; border-radius: 8px;
+    padding: 16px; font-family: 'Courier New', monospace;
+    font-size: 12px; color: #79c0ff; margin: 10px 0;
+    overflow-x: auto; line-height: 1.6;
+  }
+  .code-block .comment { color: #8b949e; }
+  .code-block .key { color: #ff7b72; }
+  .code-block .val { color: #a5d6ff; }
+  .code-block .str { color: #a5d6ff; }
+  .code-block .num { color: #79c0ff; }
+  .code-block .fn { color: #d2a8ff; }
+
+  /* FLOW */
+  .flow { display: flex; flex-direction: column; gap: 0; }
+  .flow-item {
+    display: flex; gap: 0; align-items: stretch;
+  }
+  .flow-line { display: flex; flex-direction: column; align-items: center; width: 40px; flex-shrink: 0; }
+  .flow-circle {
+    width: 32px; height: 32px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 800; flex-shrink: 0;
+    margin-top: 16px;
+  }
+  .flow-vline { width: 2px; background: #30363d; flex: 1; margin: 4px 0; }
+  .flow-body { flex: 1; padding: 14px 0 14px 16px; }
+  .flow-card {
+    background: #161b22; border: 1px solid #30363d; border-radius: 8px;
+    padding: 16px;
+  }
+  .flow-card h3 { font-size: 14px; color: #f0f6fc; font-weight: 700; margin-bottom: 6px; }
+  .flow-card p { font-size: 12px; color: #8b949e; line-height: 1.6; }
+  .flow-card .badge {
+    display: inline-block; background: #1f2937; border: 1px solid #374151;
+    border-radius: 4px; padding: 2px 8px; font-size: 11px;
+    font-family: 'Courier New', monospace; color: #93c5fd; margin: 3px 2px 0 0;
+  }
+
+  /* MODULE GRID */
+  .module-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .module-card {
+    background: #0d1117; border: 1px solid #30363d; border-radius: 8px;
+    padding: 16px; cursor: pointer; transition: border-color 0.2s;
+  }
+  .module-card:hover { border-color: #58a6ff44; }
+  .module-card.open { border-color: #58a6ff; }
+  .module-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .module-icon { font-size: 20px; }
+  .module-title { font-size: 13px; color: #f0f6fc; font-weight: 700; }
+  .module-sub { font-size: 11px; color: #58a6ff; font-family: 'Courier New', monospace; }
+  .module-desc { font-size: 12px; color: #8b949e; line-height: 1.6; }
+  .module-detail { display: none; margin-top: 10px; border-top: 1px solid #30363d; padding-top: 10px; }
+  .module-detail.show { display: block; }
+  .module-detail ul { list-style: none; }
+  .module-detail ul li { font-size: 12px; color: #c9d1d9; padding: 3px 0; display: flex; gap: 8px; }
+  .module-detail ul li::before { content: '›'; color: #58a6ff; }
+
+  /* ENDPOINT TABLE */
+  .ep-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 10px; }
+  .ep-table th { background: #0d1117; color: #8b949e; padding: 8px 12px; text-align: left; border: 1px solid #30363d; font-family: 'Courier New', monospace; font-size: 11px; }
+  .ep-table td { padding: 8px 12px; border: 1px solid #21262d; vertical-align: top; }
+  .ep-table tr:nth-child(even) td { background: #0d1117; }
+  .method { display: inline-block; padding: 2px 8px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 11px; font-weight: 700; }
+  .method.get { background: #1a3a1a; color: #3fb950; }
+  .method.post { background: #1a2a3a; color: #58a6ff; }
+  .method.ws { background: #2a1a3a; color: #bc8cff; }
+  .ep-path { color: #79c0ff; font-family: 'Courier New', monospace; }
+  .ep-desc { color: #8b949e; }
+
+  /* DATA MODEL */
+  .model-block { background: #0d1117; border: 1px solid #30363d; border-radius: 8px; padding: 16px; margin-bottom: 12px; }
+  .model-name { font-size: 12px; font-family: 'Courier New', monospace; color: #d2a8ff; font-weight: 700; margin-bottom: 10px; }
+  .field-row { display: flex; gap: 10px; padding: 4px 0; border-bottom: 1px solid #21262d; }
+  .field-row:last-child { border: none; }
+  .field-name { font-size: 11px; font-family: 'Courier New', monospace; color: #79c0ff; width: 140px; flex-shrink: 0; }
+  .field-type { font-size: 11px; font-family: 'Courier New', monospace; color: #a5d6ff; width: 100px; flex-shrink: 0; }
+  .field-desc { font-size: 11px; color: #8b949e; }
+
+  /* CHECKLIST */
+  .checklist { list-style: none; }
+  .checklist li { display: flex; align-items: flex-start; gap: 10px; padding: 7px 0; border-bottom: 1px solid #21262d; font-size: 13px; color: #c9d1d9; }
+  .checklist li:last-child { border: none; }
+  .check-box { width: 18px; height: 18px; border: 2px solid #30363d; border-radius: 4px; flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; justify-content: center; font-size: 10px; }
+  .check-box.done { background: #1a3a1a; border-color: #3fb950; color: #3fb950; }
+  .check-box.todo { border-color: #58a6ff; }
+  .check-priority { font-size: 10px; padding: 2px 6px; border-radius: 4px; margin-left: auto; flex-shrink: 0; }
+  .p-high { background: #3a1a1a; color: #ff7b72; }
+  .p-med { background: #3a2a1a; color: #f0a848; }
+  .p-low { background: #1a2a3a; color: #58a6ff; }
+
+  /* ALERT */
+  .alert { border-radius: 8px; padding: 14px 16px; margin-bottom: 16px; display: flex; gap: 12px; align-items: flex-start; }
+  .alert.info { background: #1a2a3a; border: 1px solid #1f4068; }
+  .alert.warn { background: #2a2010; border: 1px solid #4a3a10; }
+  .alert p { font-size: 13px; line-height: 1.6; }
+  .alert.info p { color: #93c5fd; }
+  .alert.warn p { color: #f0a848; }
+
+  /* SECTION HEADER */
+  .section-header { margin-bottom: 20px; }
+  .section-header h1 { font-size: 20px; color: #f0f6fc; font-weight: 800; margin-bottom: 6px; }
+  .section-header p { font-size: 13px; color: #8b949e; line-height: 1.6; }
+
+  @media (max-width: 600px) {
+    .module-grid { grid-template-columns: 1fr; }
+    .nav-item { padding: 10px 14px; font-size: 12px; }
+    .hero h1 { font-size: 22px; }
+    .field-name, .field-type { width: auto; }
+    .field-row { flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="version-badge">
+    <span class="status-dot"></span>
+    BUILD v1.0 — SPEC DOCUMENT
+  </div>
+  <h1>Gemelo Digital <span>Metabólico</span></h1>
+  <p class="subtitle">Guía técnica completa para la construcción del software. Este documento describe la arquitectura, módulos, modelos de datos, APIs y flujos necesarios para implementar el sistema.</p>
+  <div class="tech-stack">
+    <span class="tech-pill">Python / FastAPI</span>
+    <span class="tech-pill">React Native</span>
+    <span class="tech-pill">PostgreSQL</span>
+    <span class="tech-pill">TensorFlow / scikit-learn</span>
+    <span class="tech-pill">WebSocket</span>
+    <span class="tech-pill">IoT / BLE</span>
+    <span class="tech-pill">Docker</span>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="nav">
+  <div class="nav-item active" onclick="show('overview', this)">📋 Visión general</div>
+  <div class="nav-item" onclick="show('flujo', this)">🔄 Flujo de datos</div>
+  <div class="nav-item" onclick="show('modulos', this)">🧩 Módulos</div>
+  <div class="nav-item" onclick="show('api', this)">⚡ API & Endpoints</div>
+  <div class="nav-item" onclick="show('modelos', this)">🗄️ Modelos de datos</div>
+  <div class="nav-item" onclick="show('ia', this)">🧠 Motor IA</div>
+  <div class="nav-item" onclick="show('roadmap', this)">🗺️ Roadmap</div>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+  <!-- ===== OVERVIEW ===== -->
+  <div class="section active" id="overview">
+    <div class="section-header">
+      <h1>¿Qué estás construyendo?</h1>
+      <p>Lee esto primero antes de tocar una sola línea de código.</p>
+    </div>
+
+    <div class="alert info">
+      <span style="font-size:18px">💡</span>
+      <p><strong>Concepto central:</strong> Un gemelo digital metabólico es una réplica computacional en tiempo real del estado metabólico de una persona. Recibe datos continuos de sensores físicos (glucosa, actividad, sueño, estrés), los procesa con modelos de IA y produce predicciones de riesgo + recomendaciones personalizadas. El "gemelo" aprende y se actualiza constantemente para volverse más preciso con cada usuario.</p>
+    </div>
+
+    <div class="card">
+      <h2>🎯 Objetivo del sistema</h2>
+      <p>Detectar el riesgo de síndrome metabólico en etapas tempranas en adultos de 20-45 años, <strong>antes de que aparezcan síntomas clínicos</strong>. El sistema debe ser capaz de:</p>
+      <div class="code-block">
+<span class="comment"># LO QUE EL SISTEMA DEBE HACER</span>
+
+<span class="key">1.</span> <span class="val">Recibir</span> datos continuos de CGM (glucosa), wearable (HRV, pasos, sueño) y app (hábitos)
+<span class="key">2.</span> <span class="val">Construir</span> un modelo metabólico individual por usuario (gemelo digital)
+<span class="key">3.</span> <span class="val">Predecir</span> respuesta glucémica a comidas y hábitos ANTES de que ocurran
+<span class="key">4.</span> <span class="val">Calcular</span> un "Índice de Carga Metabólica" (ICM) en tiempo real: score 0-100
+<span class="key">5.</span> <span class="val">Generar</span> recomendaciones personalizadas diarias basadas en el perfil del usuario
+<span class="key">6.</span> <span class="val">Alertar</span> cuando el ICM supere umbrales de riesgo definidos</div>
+    </div>
+
+    <div class="card">
+      <h2>🏗️ Arquitectura general (4 capas)</h2>
+      <div class="code-block">
+<span class="comment">┌─────────────────────────────────────────────────────────┐</span>
+<span class="comment">│  CAPA 1: SENSORES Y DISPOSITIVOS (IoT Layer)            │</span>
+<span class="comment">│  CGM Sensor ──► Wearable (BLE) ──► App Móvil           │</span>
+<span class="comment">├─────────────────────────────────────────────────────────┤</span>
+<span class="comment">│  CAPA 2: INGESTA Y PROCESAMIENTO DE DATOS (Backend)     │</span>
+<span class="comment">│  API Gateway ──► Message Queue ──► Data Processor       │</span>
+<span class="comment">├─────────────────────────────────────────────────────────┤</span>
+<span class="comment">│  CAPA 3: GEMELO DIGITAL + MOTOR IA (Core Engine)        │</span>
+<span class="comment">│  Digital Twin Model ──► LSTM ──► Risk Calculator        │</span>
+<span class="comment">├─────────────────────────────────────────────────────────┤</span>
+<span class="comment">│  CAPA 4: INTERFAZ DE USUARIO (Frontend)                 │</span>
+<span class="comment">│  Dashboard ──► Alertas ──► Recomendaciones              │</span>
+<span class="comment">└─────────────────────────────────────────────────────────┘</span></div>
+    </div>
+
+    <div class="card">
+      <h2>📱 Plataformas a desarrollar</h2>
+      <div class="module-grid">
+        <div class="module-card">
+          <div class="module-header">
+            <div class="module-icon">📱</div>
+            <div><div class="module-title">App Móvil</div><div class="module-sub">React Native</div></div>
+          </div>
+          <div class="module-desc">App para el usuario final. Registro de hábitos, visualización del gemelo, alertas y recomendaciones diarias. iOS + Android.</div>
+        </div>
+        <div class="module-card">
+          <div class="module-header">
+            <div class="module-icon">🖥️</div>
+            <div><div class="module-title">Dashboard Web</div><div class="module-sub">React.js</div></div>
+          </div>
+          <div class="module-desc">Panel de administración para médicos o coordinadores de salud. Vista de múltiples pacientes, exportación de reportes.</div>
+        </div>
+        <div class="module-card">
+          <div class="module-header">
+            <div class="module-icon">⚙️</div>
+            <div><div class="module-title">Backend API</div><div class="module-sub">FastAPI + Python</div></div>
+          </div>
+          <div class="module-desc">API REST + WebSocket. Gestión de usuarios, ingesta de datos de sensores, lógica de negocio y comunicación con el motor IA.</div>
+        </div>
+        <div class="module-card">
+          <div class="module-header">
+            <div class="module-icon">🧠</div>
+            <div><div class="module-title">Motor IA</div><div class="module-sub">Python + TensorFlow</div></div>
+          </div>
+          <div class="module-desc">Núcleo del gemelo digital. Modelos LSTM y Random Forest. Entrenamiento continuo por usuario. Simulador metabólico.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== FLUJO ===== -->
+  <div class="section" id="flujo">
+    <div class="section-header">
+      <h1>Flujo completo de datos</h1>
+      <p>Cómo viajan los datos desde el cuerpo del usuario hasta la recomendación final.</p>
+    </div>
+
+    <div class="flow">
+      <div class="flow-item">
+        <div class="flow-line">
+          <div class="flow-circle" style="background:#1a2a3a;color:#58a6ff;">1</div>
+          <div class="flow-vline"></div>
+        </div>
+        <div class="flow-body">
+          <div class="flow-card">
+            <h3>📡 Captura de datos — Sensores IoT</h3>
+            <p>El usuario lleva 3 fuentes de datos activas simultáneamente:</p>
+            <span class="badge">CGM → glucosa cada 5 min</span>
+            <span class="badge">Wearable → HRV, pasos, BPM, sueño</span>
+            <span class="badge">App → comidas, estrés, síntomas</span>
+            <div style="margin-top:10px;font-size:12px;color:#8b949e;">
+              <strong style="color:#c9d1d9;">Protocolo de conexión:</strong> Bluetooth Low Energy (BLE) para wearable y CGM → App móvil → API via HTTPS. Los datos del CGM llegan cada 5 minutos de forma automática. Los del wearable, cada 1 minuto. Los de la app, cuando el usuario los registra (mínimo 3 veces al día: desayuno, almuerzo, cena).
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flow-item">
+        <div class="flow-line">
+          <div class="flow-circle" style="background:#1a3a1a;color:#3fb950;">2</div>
+          <div class="flow-vline"></div>
+        </div>
+        <div class="flow-body">
+          <div class="flow-card">
+            <h3>☁️ Ingesta y validación — Backend API</h3>
+            <p>El backend recibe, valida y normaliza todos los datos entrantes.</p>
+            <span class="badge">Validar rangos fisiológicos</span>
+            <span class="badge">Detectar datos faltantes</span>
+            <span class="badge">Timestamping en UTC</span>
+            <div style="margin-top:10px;font-size:12px;color:#8b949e;">
+              <strong style="color:#c9d1d9;">Reglas de validación críticas:</strong><br>
+              • Glucosa: rango válido 40–400 mg/dL. Fuera de rango = alerta inmediata.<br>
+              • HRV: valores negativos o &gt;200ms = descartar, marcar como error de sensor.<br>
+              • Si hay gap de datos mayor a 15 minutos en CGM, notificar al usuario.<br>
+              • Todos los timestamps deben convertirse a UTC antes de almacenar.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flow-item">
+        <div class="flow-line">
+          <div class="flow-circle" style="background:#2a1a3a;color:#bc8cff;">3</div>
+          <div class="flow-vline"></div>
+        </div>
+        <div class="flow-body">
+          <div class="flow-card">
+            <h3>🗄️ Almacenamiento — Base de datos</h3>
+            <p>Los datos se almacenan en dos bases complementarias.</p>
+            <span class="badge">PostgreSQL → datos estructurados</span>
+            <span class="badge">TimescaleDB → series de tiempo</span>
+            <div style="margin-top:10px;font-size:12px;color:#8b949e;">
+              <strong style="color:#c9d1d9;">Importante:</strong> Los datos de glucosa y wearable son series de tiempo densas. Usar TimescaleDB (extensión de PostgreSQL optimizada para series de tiempo). Los datos de hábitos y perfiles de usuario van en PostgreSQL estándar. Retención de datos: mínimo 2 años por usuario.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flow-item">
+        <div class="flow-line">
+          <div class="flow-circle" style="background:#3a2a1a;color:#f0a848;">4</div>
+          <div class="flow-vline"></div>
+        </div>
+        <div class="flow-body">
+          <div class="flow-card">
+            <h3>🧠 Procesamiento IA — Motor del Gemelo Digital</h3>
+            <p>El núcleo del sistema. Corre en un microservicio independiente.</p>
+            <span class="badge">LSTM → predicción glucémica</span>
+            <span class="badge">Random Forest → clasificación riesgo</span>
+            <span class="badge">Índice de Carga Metabólica (ICM)</span>
+            <div style="margin-top:10px;font-size:12px;color:#8b949e;">
+              <strong style="color:#c9d1d9;">Cuándo se ejecuta:</strong> El motor IA corre en 3 momentos: (1) cada 15 minutos de forma automática para actualizar el ICM, (2) cada vez que el usuario registra una comida para predecir la respuesta glucémica, (3) una vez al día a las 7am para generar el resumen y recomendaciones del día.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flow-item">
+        <div class="flow-line">
+          <div class="flow-circle" style="background:#1a3a2a;color:#3fb950;">5</div>
+          <div class="flow-vline"></div>
+        </div>
+        <div class="flow-body">
+          <div class="flow-card">
+            <h3>📲 Entrega al usuario — App y Notificaciones</h3>
+            <p>El resultado final que ve el usuario en su dispositivo.</p>
+            <span class="badge">ICM en tiempo real (0–100)</span>
+            <span class="badge">Alertas push críticas</span>
+            <span class="badge">Recomendaciones diarias</span>
+            <span class="badge">Gráfico de glucosa</span>
+            <div style="margin-top:10px;font-size:12px;color:#8b949e;">
+              <strong style="color:#c9d1d9;">Tipos de notificación:</strong><br>
+              • <strong>Alerta crítica:</strong> glucosa &lt;70 o &gt;180 mg/dL → push inmediato.<br>
+              • <strong>Alerta de riesgo:</strong> ICM supera 70 → notificación + recomendación urgente.<br>
+              • <strong>Resumen diario:</strong> 7am → resumen del día anterior + plan del día.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MÓDULOS ===== -->
+  <div class="section" id="modulos">
+    <div class="section-header">
+      <h1>Módulos del sistema</h1>
+      <p>Haz clic en cada módulo para ver los detalles de implementación.</p>
+    </div>
+
+    <div class="module-grid">
+      <div class="module-card" onclick="toggleModule(this)">
+        <div class="module-header">
+          <div class="module-icon">🔐</div>
+          <div><div class="module-title">Autenticación</div><div class="module-sub">auth_service</div></div>
+        </div>
+        <div class="module-desc">Registro, login, gestión de sesiones y permisos.</div>
+        <div class="module-detail">
+          <ul>
+            <li>JWT tokens con refresh token (24h acceso / 30d refresh)</li>
+            <li>Registro con email + verificación</li>
+            <li>Roles: paciente, médico, admin</li>
+            <li>OAuth2 (Google) para registro rápido</li>
+            <li>Encriptación de datos sensibles con AES-256</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="module-card" onclick="toggleModule(this)">
+        <div class="module-header">
+          <div class="module-icon">📡</div>
+          <div><div class="module-title">Integración Sensores</div><div class="module-sub">sensor_gateway</div></div>
+        </div>
+        <div class="module-desc">Conexión BLE con CGM y wearables compatibles.</div>
+        <div class="module-detail">
+          <ul>
+            <li>Soporte CGM: Dexcom G6/G7 API, Libre 3 API</li>
+            <li>Soporte Wearable: Fitbit API, Garmin Connect IQ, Apple HealthKit, Google Health</li>
+            <li>Protocolo BLE para conexión directa desde app</li>
+            <li>Fallback: entrada manual de glucosa si no hay CGM</li>
+            <li>Sync automático en background cada 5 min</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="module-card" onclick="toggleModule(this)">
+        <div class="module-header">
+          <div class="module-icon">📝</div>
+          <div><div class="module-title">Registro de Hábitos</div><div class="module-sub">habits_service</div></div>
+        </div>
+        <div class="module-desc">Módulo de autoreporte de comidas, sueño y estrés.</div>
+        <div class="module-detail">
+          <ul>
+            <li>Registro de comidas: búsqueda en base de datos nutricional peruana (CENAN)</li>
+            <li>Carga glucémica calculada automáticamente por porción</li>
+            <li>Registro de sueño: hora acostarse, hora levantarse, calidad 1-5</li>
+            <li>Estrés: escala visual 1-10 + notas libres</li>
+            <li>Recordatorios configurables (push notifications)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="module-card" onclick="toggleModule(this)">
+        <div class="module-header">
+          <div class="module-icon">🧬</div>
+          <div><div class="module-title">Gemelo Digital Core</div><div class="module-sub">digital_twin_engine</div></div>
+        </div>
+        <div class="module-desc">El corazón del sistema. Modelo individual por usuario.</div>
+        <div class="module-detail">
+          <ul>
+            <li>Un objeto "Twin" por usuario almacenado como modelo serializado</li>
+            <li>Reentrenamiento automático cada 7 días con datos nuevos</li>
+            <li>Modelo base: preentrenado con dataset público (NHANES + ENDES Perú)</li>
+            <li>Fine-tuning individual: primeras 2 semanas son de calibración</li>
+            <li>Versionado de modelos: guardar historial de versiones del gemelo</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="module-card" onclick="toggleModule(this)">
+        <div class="module-header">
+          <div class="module-icon">📊</div>
+          <div><div class="module-title">Índice de Carga Metabólica</div><div class="module-sub">icm_calculator</div></div>
+        </div>
+        <div class="module-desc">Score 0-100 que resume el riesgo metabólico en tiempo real.</div>
+        <div class="module-detail">
+          <ul>
+            <li>ICM = promedio ponderado de 5 sub-índices</li>
+            <li>Sub-índice glucémico (peso: 35%) — basado en CGM</li>
+            <li>Sub-índice de actividad (peso: 20%) — basado en pasos y actividad</li>
+            <li>Sub-índice de sueño (peso: 20%) — basado en horas y calidad</li>
+            <li>Sub-índice de estrés (peso: 15%) — basado en HRV</li>
+            <li>Sub-índice nutricional (peso: 10%) — basado en carga glucémica</li>
+            <li>Umbrales: 0-39 verde / 40-69 amarillo / 70-100 rojo</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="module-card" onclick="toggleModule(this)">
+        <div class="module-header">
+          <div class="module-icon">💬</div>
+          <div><div class="module-title">Motor de Recomendaciones</div><div class="module-sub">recommendation_engine</div></div>
+        </div>
+        <div class="module-desc">Genera recomendaciones personalizadas basadas en el gemelo.</div>
+        <div class="module-detail">
+          <ul>
+            <li>Banco de 200+ recomendaciones parametrizadas por variable</li>
+            <li>Selección basada en el delta negativo más alto del ICM del usuario</li>
+            <li>Nunca repetir la misma recomendación 2 días seguidos</li>
+            <li>Tono: amigable, en español peruano, sin tecnicismos médicos</li>
+            <li>A/B testing: registrar qué recomendaciones generan más adherencia</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== API ===== -->
+  <div class="section" id="api">
+    <div class="section-header">
+      <h1>API Endpoints</h1>
+      <p>Base URL: <code style="color:#79c0ff;background:#0d1117;padding:2px 8px;border-radius:4px;font-size:13px;">https://api.geminometabolico.pe/v1</code></p>
+    </div>
+
+    <div class="card">
+      <h2>🔐 Auth</h2>
+      <table class="ep-table">
+        <tr><th>Método</th><th>Endpoint</th><th>Descripción</th></tr>
+        <tr><td><span class="method post">POST</span></td><td class="ep-path">/auth/register</td><td class="ep-desc">Registro de nuevo usuario</td></tr>
+        <tr><td><span class="method post">POST</span></td><td class="ep-path">/auth/login</td><td class="ep-desc">Login → devuelve access + refresh token</td></tr>
+        <tr><td><span class="method post">POST</span></td><td class="ep-path">/auth/refresh</td><td class="ep-desc">Renovar access token</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>📡 Datos de Sensores</h2>
+      <table class="ep-table">
+        <tr><th>Método</th><th>Endpoint</th><th>Descripción</th></tr>
+        <tr><td><span class="method post">POST</span></td><td class="ep-path">/sensors/glucose</td><td class="ep-desc">Enviar lectura de glucosa (CGM o manual)</td></tr>
+        <tr><td><span class="method post">POST</span></td><td class="ep-path">/sensors/wearable</td><td class="ep-desc">Enviar batch de datos del wearable</td></tr>
+        <tr><td><span class="method get">GET</span></td><td class="ep-path">/sensors/glucose/today</td><td class="ep-desc">Obtener lecturas de glucosa del día</td></tr>
+        <tr><td><span class="method ws">WS</span></td><td class="ep-path">/ws/glucose/{user_id}</td><td class="ep-desc">Stream en tiempo real de glucosa (WebSocket)</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>🧠 Gemelo Digital</h2>
+      <table class="ep-table">
+        <tr><th>Método</th><th>Endpoint</th><th>Descripción</th></tr>
+        <tr><td><span class="method get">GET</span></td><td class="ep-path">/twin/{user_id}/icm</td><td class="ep-desc">Obtener ICM actual del usuario (0-100)</td></tr>
+        <tr><td><span class="method post">POST</span></td><td class="ep-path">/twin/{user_id}/predict/meal</td><td class="ep-desc">Predecir respuesta glucémica a una comida</td></tr>
+        <tr><td><span class="method post">POST</span></td><td class="ep-path">/twin/{user_id}/simulate</td><td class="ep-desc">Simular escenario hipotético (what-if)</td></tr>
+        <tr><td><span class="method get">GET</span></td><td class="ep-path">/twin/{user_id}/recommendations/today</td><td class="ep-desc">Recomendaciones personalizadas del día</td></tr>
+        <tr><td><span class="method get">GET</span></td><td class="ep-path">/twin/{user_id}/report/weekly</td><td class="ep-desc">Reporte semanal del gemelo</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>📝 Hábitos</h2>
+      <table class="ep-table">
+        <tr><th>Método</th><th>Endpoint</th><th>Descripción</th></tr>
+        <tr><td><span class="method post">POST</span></td><td class="ep-path">/habits/meal</td><td class="ep-desc">Registrar comida (nombre, hora, porciones)</td></tr>
+        <tr><td><span class="method post">POST</span></td><td class="ep-path">/habits/sleep</td><td class="ep-desc">Registrar sesión de sueño</td></tr>
+        <tr><td><span class="method post">POST</span></td><td class="ep-path">/habits/stress</td><td class="ep-desc">Registrar nivel de estrés percibido</td></tr>
+        <tr><td><span class="method get">GET</span></td><td class="ep-path">/habits/history?days=30</td><td class="ep-desc">Historial de hábitos (n días)</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- ===== MODELOS DE DATOS ===== -->
+  <div class="section" id="modelos">
+    <div class="section-header">
+      <h1>Modelos de datos</h1>
+      <p>Estructura de las entidades principales en la base de datos.</p>
+    </div>
+
+    <div class="model-block">
+      <div class="model-name">User</div>
+      <div class="field-row"><span class="field-name">id</span><span class="field-type">UUID</span><span class="field-desc">Identificador único</span></div>
+      <div class="field-row"><span class="field-name">email</span><span class="field-type">STRING</span><span class="field-desc">Email del usuario</span></div>
+      <div class="field-row"><span class="field-name">age</span><span class="field-type">INTEGER</span><span class="field-desc">Edad (rango objetivo: 20-45 años)</span></div>
+      <div class="field-row"><span class="field-name">sex</span><span class="field-type">ENUM</span><span class="field-desc">male / female / other</span></div>
+      <div class="field-row"><span class="field-name">weight_kg</span><span class="field-type">FLOAT</span><span class="field-desc">Peso en kg (actualizable)</span></div>
+      <div class="field-row"><span class="field-name">height_cm</span><span class="field-type">FLOAT</span><span class="field-desc">Talla en cm</span></div>
+      <div class="field-row"><span class="field-name">waist_cm</span><span class="field-type">FLOAT</span><span class="field-desc">Circunferencia abdominal (clave para síndrome metabólico)</span></div>
+      <div class="field-row"><span class="field-name">twin_version</span><span class="field-type">INTEGER</span><span class="field-desc">Versión actual del gemelo digital del usuario</span></div>
+    </div>
+
+    <div class="model-block">
+      <div class="model-name">GlucoseReading</div>
+      <div class="field-row"><span class="field-name">id</span><span class="field-type">UUID</span><span class="field-desc">Identificador único</span></div>
+      <div class="field-row"><span class="field-name">user_id</span><span class="field-type">UUID → User</span><span class="field-desc">FK al usuario</span></div>
+      <div class="field-row"><span class="field-name">value_mgdl</span><span class="field-type">FLOAT</span><span class="field-desc">Valor de glucosa en mg/dL</span></div>
+      <div class="field-row"><span class="field-name">source</span><span class="field-type">ENUM</span><span class="field-desc">cgm / manual / lab</span></div>
+      <div class="field-row"><span class="field-name">timestamp_utc</span><span class="field-type">TIMESTAMPTZ</span><span class="field-desc">Momento exacto de la lectura</span></div>
+      <div class="field-row"><span class="field-name">is_postprandial</span><span class="field-type">BOOLEAN</span><span class="field-desc">True si lectura ocurrió &lt;2h después de comida registrada</span></div>
+    </div>
+
+    <div class="model-block">
+      <div class="model-name">MetabolicIndex (ICM)</div>
+      <div class="field-row"><span class="field-name">user_id</span><span class="field-type">UUID → User</span><span class="field-desc">FK al usuario</span></div>
+      <div class="field-row"><span class="field-name">icm_score</span><span class="field-type">FLOAT</span><span class="field-desc">Score total 0-100</span></div>
+      <div class="field-row"><span class="field-name">sub_glucose</span><span class="field-type">FLOAT</span><span class="field-desc">Sub-índice glucémico (peso 35%)</span></div>
+      <div class="field-row"><span class="field-name">sub_activity</span><span class="field-type">FLOAT</span><span class="field-desc">Sub-índice actividad física (peso 20%)</span></div>
+      <div class="field-row"><span class="field-name">sub_sleep</span><span class="field-type">FLOAT</span><span class="field-desc">Sub-índice sueño (peso 20%)</span></div>
+      <div class="field-row"><span class="field-name">sub_stress</span><span class="field-type">FLOAT</span><span class="field-desc">Sub-índice estrés HRV (peso 15%)</span></div>
+      <div class="field-row"><span class="field-name">sub_nutrition</span><span class="field-type">FLOAT</span><span class="field-desc">Sub-índice carga glucémica (peso 10%)</span></div>
+      <div class="field-row"><span class="field-name">calculated_at</span><span class="field-type">TIMESTAMPTZ</span><span class="field-desc">Momento del cálculo</span></div>
+    </div>
+  </div>
+
+  <!-- ===== IA ===== -->
+  <div class="section" id="ia">
+    <div class="section-header">
+      <h1>Motor de Inteligencia Artificial</h1>
+      <p>Detalle técnico del núcleo del gemelo digital.</p>
+    </div>
+
+    <div class="card">
+      <h2>🔮 Modelo 1 — Predicción Glucémica (LSTM)</h2>
+      <p>Predice cómo va a cambiar la glucosa del usuario en las próximas 2 horas.</p>
+      <div class="code-block">
+<span class="comment"># ARQUITECTURA LSTM</span>
+<span class="key">input_features</span> = [
+  <span class="str">'glucose_last_12h'</span>,      <span class="comment"># Serie de tiempo de glucosa (144 lecturas)</span>
+  <span class="str">'meal_glycemic_load'</span>,    <span class="comment"># Carga glucémica de la última comida</span>
+  <span class="str">'minutes_since_meal'</span>,    <span class="comment"># Tiempo desde última comida</span>
+  <span class="str">'steps_last_hour'</span>,       <span class="comment"># Actividad física reciente</span>
+  <span class="str">'hrv_current'</span>,           <span class="comment"># HRV actual (proxy de estrés)</span>
+  <span class="str">'hour_of_day'</span>,           <span class="comment"># Hora del día (patrón circadiano)</span>
+]
+
+<span class="key">output</span> = <span class="str">'glucose_next_30_60_120_min'</span>  <span class="comment"># Predicción a 3 horizontes</span>
+
+<span class="key">architecture</span>: LSTM(128) → Dropout(0.2) → LSTM(64) → Dense(3)
+<span class="key">loss</span>: MAE (Mean Absolute Error)
+<span class="key">target_error</span>: &lt; 15 mg/dL (clínicamente aceptable)</div>
+    </div>
+
+    <div class="card">
+      <h2>🎯 Modelo 2 — Clasificación de Riesgo (Random Forest)</h2>
+      <p>Clasifica el nivel de riesgo metabólico actual: bajo / medio / alto.</p>
+      <div class="code-block">
+<span class="comment"># FEATURES DEL RANDOM FOREST</span>
+<span class="key">features</span> = [
+  <span class="str">'glucose_cv_pct'</span>,        <span class="comment"># Coeficiente de variación glucémica (últimos 7 días)</span>
+  <span class="str">'time_in_range_pct'</span>,     <span class="comment"># % tiempo en rango 70-140 mg/dL</span>
+  <span class="str">'avg_postprandial_peak'</span>, <span class="comment"># Pico promedio postprandial</span>
+  <span class="str">'avg_sleep_hours'</span>,       <span class="comment"># Promedio horas de sueño (7 días)</span>
+  <span class="str">'avg_daily_steps'</span>,       <span class="comment"># Promedio pasos diarios (7 días)</span>
+  <span class="str">'avg_hrv'</span>,               <span class="comment"># HRV promedio (indicador de estrés)</span>
+  <span class="str">'tyg_index'</span>,             <span class="comment"># Índice TyG = ln(TG/2 × glucosa/2) si hay labs</span>
+  <span class="str">'waist_cm'</span>,              <span class="comment"># Circunferencia abdominal</span>
+]
+
+<span class="key">output_classes</span>: [<span class="str">'bajo'</span>, <span class="str">'moderado'</span>, <span class="str">'alto'</span>]
+<span class="key">n_estimators</span>: 200
+<span class="key">target_accuracy</span>: &gt; 85%</div>
+    </div>
+
+    <div class="card">
+      <h2>📐 Índice TyG — Proxy de Resistencia a la Insulina</h2>
+      <p>Cuando el usuario tiene datos de laboratorio, calcular este índice como indicador indirecto de resistencia a la insulina (RI).</p>
+      <div class="code-block">
+<span class="comment"># FÓRMULA DEL ÍNDICE TyG</span>
+<span class="fn">def</span> <span class="key">calculate_tyg</span>(triglycerides_mgdl, fasting_glucose_mgdl):
+    <span class="comment"># Ambos valores en mg/dL, obtenidos de examen de sangre</span>
+    tyg = ln(triglycerides_mgdl / <span class="num">2</span>) + ln(fasting_glucose_mgdl / <span class="num">2</span>)
+    <span class="fn">return</span> tyg
+
+<span class="comment"># INTERPRETACIÓN</span>
+<span class="comment"># TyG < 8.5  → Sin resistencia a la insulina</span>
+<span class="comment"># TyG 8.5–9.0 → Riesgo moderado de RI</span>
+<span class="comment"># TyG > 9.0  → Alta probabilidad de resistencia a la insulina</span></div>
+    </div>
+  </div>
+
+  <!-- ===== ROADMAP ===== -->
+  <div class="section" id="roadmap">
+    <div class="section-header">
+      <h1>Roadmap de construcción</h1>
+      <p>Orden sugerido de implementación por fases. Empieza por el MVP.</p>
+    </div>
+
+    <div class="card">
+      <h2>🚀 Fase 1 — MVP (semanas 1-6)</h2>
+      <ul class="checklist">
+        <li><div class="check-box todo">›</div>Setup del proyecto: repo, Docker, CI/CD básico<span class="check-priority p-high">Alta</span></li>
+        <li><div class="check-box todo">›</div>Backend: autenticación JWT + CRUD de usuario<span class="check-priority p-high">Alta</span></li>
+        <li><div class="check-box todo">›</div>Base de datos: PostgreSQL + TimescaleDB configurado<span class="check-priority p-high">Alta</span></li>
+        <li><div class="check-box todo">›</div>App móvil: pantallas de login, registro y perfil<span class="check-priority p-high">Alta</span></li>
+        <li><div class="check-box todo">›</div>Módulo de registro manual de glucosa + hábitos<span class="check-priority p-high">Alta</span></li>
+        <li><div class="check-box todo">›</div>Cálculo básico del ICM (versión simplificada)<span class="check-priority p-med">Media</span></li>
+        <li><div class="check-box todo">›</div>Dashboard con gráfico de glucosa del día<span class="check-priority p-med">Media</span></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>🔬 Fase 2 — Integración IoT (semanas 7-12)</h2>
+      <ul class="checklist">
+        <li><div class="check-box todo">›</div>Integración Dexcom / LibreLink API (CGM)<span class="check-priority p-high">Alta</span></li>
+        <li><div class="check-box todo">›</div>Integración Google Health / Apple HealthKit (wearable)<span class="check-priority p-high">Alta</span></li>
+        <li><div class="check-box todo">›</div>WebSocket para streaming de glucosa en tiempo real<span class="check-priority p-high">Alta</span></li>
+        <li><div class="check-box todo">›</div>Sistema de alertas push (glucosa crítica + ICM alto)<span class="check-priority p-med">Media</span></li>
+        <li><div class="check-box todo">›</div>ICM completo con los 5 sub-índices<span class="check-priority p-med">Media</span></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>🧠 Fase 3 — Motor IA y Gemelo Digital (semanas 13-20)</h2>
+      <ul class="checklist">
+        <li><div class="check-box todo">›</div>Entrenamiento modelo LSTM con dataset base (NHANES)<span class="check-priority p-high">Alta</span></li>
+        <li><div class="check-box todo">›</div>API de predicción glucémica post-comida<span class="check-priority p-high">Alta</span></li>
+        <li><div class="check-box todo">›</div>Entrenamiento Random Forest para clasificación de riesgo<span class="check-priority p-high">Alta</span></li>
+        <li><div class="check-box todo">›</div>Fine-tuning individual del gemelo por usuario<span class="check-priority p-med">Media</span></li>
+        <li><div class="check-box todo">›</div>Motor de recomendaciones personalizadas<span class="check-priority p-med">Media</span></li>
+        <li><div class="check-box todo">›</div>Simulador contrafactual (what-if)<span class="check-priority p-low">Baja</span></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>📊 Fase 4 — Dashboard médico y reportes (semanas 21-24)</h2>
+      <ul class="checklist">
+        <li><div class="check-box todo">›</div>Dashboard web para médicos (React.js)<span class="check-priority p-med">Media</span></li>
+        <li><div class="check-box todo">›</div>Reporte semanal PDF exportable<span class="check-priority p-med">Media</span></li>
+        <li><div class="check-box todo">›</div>Vista multi-paciente para coordinadores de salud<span class="check-priority p-low">Baja</span></li>
+        <li><div class="check-box todo">›</div>Cálculo automático índice TyG con datos de laboratorio<span class="check-priority p-low">Baja</span></li>
+      </ul>
+    </div>
+
+    <div class="alert warn">
+      <span style="font-size:18px">⚠️</span>
+      <p><strong>Nota importante:</strong> El sistema maneja datos de salud sensibles. Antes de lanzar cualquier fase, asegurarse de cumplir con la Ley N° 29733 de Protección de Datos Personales del Perú. Todos los datos de salud deben estar encriptados en tránsito (TLS 1.3) y en reposo (AES-256). No almacenar datos de salud en logs.</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function show(id, el) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    el.classList.add('active');
+  }
+  function toggleModule(el) {
+    const detail = el.querySelector('.module-detail');
+    const isOpen = el.classList.contains('open');
+    document.querySelectorAll('.module-card').forEach(m => {
+      m.classList.remove('open');
+      m.querySelector('.module-detail').classList.remove('show');
+    });
+    if (!isOpen) {
+      el.classList.add('open');
+      detail.classList.add('show');
+    }
+  }
+</script>
+</body>
+</html>
